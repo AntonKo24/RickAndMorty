@@ -17,11 +17,14 @@ class CharacterViewHolder(
     ) {
         binding.characterGender.text = character.gender
         binding.characterName.text = character.name
+        binding.characterSpecies.text = character.species
+        binding.characterStatus.text = character.status
+        binding.characterImage.load(character.image)
+
     }
 }
 
-class CharactersListAdapter(
-) : ListAdapter<Character, CharacterViewHolder>(ContactDiffCallback()) {
+class CharactersListAdapter : ListAdapter<Character, CharacterViewHolder>(ContactDiffCallback()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,6 +39,7 @@ class CharactersListAdapter(
         holder.bind(contact)
     }
 }
+
 
 class ContactDiffCallback : DiffUtil.ItemCallback<Character>() {
     override fun areItemsTheSame(oldItem: Character, newItem: Character): Boolean {

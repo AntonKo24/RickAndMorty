@@ -17,12 +17,21 @@ class CharactersViewModel @Inject constructor(private val repository: RickAndMor
     private val _charactersList: MutableStateFlow<List<Character>> = MutableStateFlow(emptyList())
     val charactersList: StateFlow<List<Character>> = _charactersList
 
+    private var currentPage = 1
+
     init {
+        loadCharacters()
+    }
+
+    fun loadMoreCharacters() {
+        currentPage++
+        loadCharacters()
+    }
+
+    private fun loadCharacters() {
         viewModelScope.launch {
-            val characters = repository.fetchCharacters().results
-            _charactersList.value = characters
+            val characters = repository.fetchCharacters(currentPage).results
+            _charactersList.value += characters
         }
-
-
     }
 }

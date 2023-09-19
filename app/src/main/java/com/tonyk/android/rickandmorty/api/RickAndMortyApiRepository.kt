@@ -4,5 +4,5 @@ import com.tonyk.android.rickandmorty.model.Character
 import com.tonyk.android.rickandmorty.model.CharactersResponse
 
 interface RickAndMortyApiRepository {
-    suspend fun fetchCharacters() : CharactersResponse
+    suspend fun fetchCharacters(page : Int) : CharactersResponse
 }

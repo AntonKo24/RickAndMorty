@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class RickAndMortyApiRepositoryImpl @Inject constructor(private val rickAndMortyApi: RickAndMortyApi) : RickAndMortyApiRepository {
-    override suspend fun fetchCharacters(): CharactersResponse {
-        return rickAndMortyApi.fetchCharacters()
+    override suspend fun fetchCharacters(page: Int): CharactersResponse {
+        return rickAndMortyApi.fetchCharacters(page)
     }
 }
