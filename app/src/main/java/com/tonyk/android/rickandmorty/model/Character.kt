@@ -1,6 +1,10 @@
 package com.tonyk.android.rickandmorty.model
 
-class Character (
+import com.squareup.moshi.JsonClass
+
+
+@JsonClass(generateAdapter = true)
+data class Character (
     val id : String,
     val name : String,
     val species : String,

@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesBinding
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LocationsFragment : Fragment() {
     private var _binding: FragmentLocationsBinding? = null
     private val binding get() = _binding!!

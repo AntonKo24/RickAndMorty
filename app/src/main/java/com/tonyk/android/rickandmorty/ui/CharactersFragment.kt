@@ -5,12 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersBinding
+import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class CharactersFragment : Fragment() {
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
+    private val charactersViewModel: CharactersViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,9 +34,18 @@ class CharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.testBtn.setOnClickListener {
-            findNavController().navigate(MainPageFragmentDirections.mainPageFragmentToCharacterDetailsFragment())
+        val adapter = CharactersListAdapter()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                charactersViewModel.charactersList.collect {
+                    adapter.submitList(it)
+                }
+            }
         }
+        binding.charactersRcv.layoutManager = LinearLayoutManager(context)
+        binding.charactersRcv.adapter = adapter
+
     }
 
     override fun onDestroyView() {

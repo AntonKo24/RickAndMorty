@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodeDetailsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EpisodeDetailsFragment : Fragment() {
     private var _binding: FragmentEpisodeDetailsBinding? = null
     private val binding get() = _binding!!

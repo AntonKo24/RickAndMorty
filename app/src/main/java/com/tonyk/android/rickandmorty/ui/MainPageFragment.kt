@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentMainPageBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainPageFragment : Fragment() {
     private var _binding: FragmentMainPageBinding? = null
     private val binding get() = _binding!!
