@@ -1,6 +1,7 @@
 package com.tonyk.android.rickandmorty.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersBinding
 import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -39,8 +41,8 @@ class CharactersFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                charactersViewModel.charactersList.collect {
-                    adapter.submitList(it)
+                charactersViewModel.pagingData.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
                 }
             }
         }
@@ -48,17 +50,6 @@ class CharactersFragment : Fragment() {
         binding.charactersRcv.adapter = adapter
 
 
-        binding.charactersRcv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastVisibleItemPosition == adapter.itemCount - 1) {
-                    // Достигнут конец списка, загружаем больше данных
-                    charactersViewModel.loadMoreCharacters()
-                }
-            }
-        })
     }
 
     override fun onDestroyView() {

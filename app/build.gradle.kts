@@ -77,6 +77,7 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.2")
     annotationProcessor("androidx.room:room-compiler:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
+    implementation ("androidx.room:room-paging:2.5.2")
 
     implementation("com.squareup.moshi:moshi:1.14.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")

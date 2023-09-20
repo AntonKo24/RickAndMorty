@@ -1,8 +1,6 @@
 package com.tonyk.android.rickandmorty.di
 
 import com.tonyk.android.rickandmorty.api.RickAndMortyApi
-import com.tonyk.android.rickandmorty.api.RickAndMortyApiRepository
-import com.tonyk.android.rickandmorty.api.RickAndMortyApiRepositoryImpl
 import com.tonyk.android.rickandmorty.api.RickAndMortyInterceptor
 import dagger.Module
 import dagger.Provides
@@ -35,9 +33,5 @@ object NetworkModule {
             .build()
         return retrofit.create(RickAndMortyApi::class.java)
     }
-    @Provides
-    @Singleton
-    fun provideWeatherRepository(api: RickAndMortyApi): RickAndMortyApiRepository {
-        return RickAndMortyApiRepositoryImpl(api)
-    }
+
 }
