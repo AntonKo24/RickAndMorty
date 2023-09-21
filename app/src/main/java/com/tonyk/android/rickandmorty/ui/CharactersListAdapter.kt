@@ -1,4 +1,5 @@
 package com.tonyk.android.rickandmorty.ui
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -6,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import com.tonyk.android.rickandmorty.databinding.CharactersListItemBinding
 import com.tonyk.android.rickandmorty.model.CharacterEntity
 
@@ -21,11 +23,12 @@ class CharacterViewHolder(
         binding.characterSpecies.text = characterEntity.species
         binding.characterStatus.text = characterEntity.status
         binding.characterImage.load(characterEntity.image)
-
+        Log.d("PAgingTest", "${characterEntity.name}")
     }
 }
 
 class CharactersListAdapter : PagingDataAdapter<CharacterEntity, CharacterViewHolder>(ContactDiffCallback()) {
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
