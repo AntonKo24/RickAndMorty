@@ -55,7 +55,7 @@ class CharactersFragment : Fragment() {
         binding.characterSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-
+                charactersViewModel.applyFilter(query)
                 }
                 return true
             }

@@ -27,30 +27,26 @@ class CharacterRemoteMediator @Inject constructor(
     ): MediatorResult {
 
         pageIndex = getPageIndex(loadType) ?: return MediatorResult.Success(endOfPaginationReached = true)
-
+        Log.d("PAgingTest", "111. $pageIndex 111")
         return try {
             val characters = fetchCharacters(pageIndex, filter)
+
             if (loadType == LoadType.REFRESH) {
-                charactersDao.refresh(characters)
+                charactersDao.refresh(characters, filter)
 
             } else {
                 charactersDao.insertCharacters(characters)
-                 Log.d("SQLDED" , "$characters")
+                 Log.d("PAgingTest" , "ПАГИНАЦИЯ РАБОТАЕТ")
             }
             Log.d("PAgingTest", "111. $pageIndex , ${filter.name}")
             MediatorResult.Success(
-
-                endOfPaginationReached = characters.size < 20
-
-
+                endOfPaginationReached = characters.isEmpty()
             )
         } catch (e: Exception) {
-            Log.d("PAgingTest", "222. $pageIndex , $filter")
+            Log.d("PAgingTest", "ERROR")
             MediatorResult.Error(e)
         }
-
     }
-
     private fun getPageIndex(loadType: LoadType): Int? {
         return when (loadType) {
             LoadType.REFRESH -> 1

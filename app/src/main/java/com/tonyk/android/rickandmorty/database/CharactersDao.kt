@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.tonyk.android.rickandmorty.model.CharacterEntity
+import com.tonyk.android.rickandmorty.model.CharacterFilter
 
 @Dao
 interface CharactersDao {
@@ -15,11 +16,11 @@ interface CharactersDao {
     suspend fun insertCharacters(characters: List<CharacterEntity>)
 
     @Query("SELECT * FROM characters WHERE " +
-            "(:name IS NULL OR name = :name) AND " +
-            "(:status IS NULL OR status = :status) AND " +
-            "(:species IS NULL OR species = :species) AND " +
-            "(:type IS NULL OR type = :type) AND " +
-            "(:gender IS NULL OR gender = :gender)")
+            "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
+            "(:status IS NULL OR lower(status) = lower(:status)) AND " +
+            "(:species IS NULL OR lower(species) = lower(:species)) AND " +
+            "(:type IS NULL OR lower(type) = lower(:type)) AND " +
+            "(:gender IS NULL OR lower(gender) = lower(:gender))")
     fun getAllCharacters(
         name: String?,
         status: String?,
@@ -31,12 +32,21 @@ interface CharactersDao {
 
 
 
-    @Query("DELETE FROM characters")
-    suspend fun clearAllCharacters()
+    @Query("DELETE FROM characters WHERE " +
+            "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
+            "(:status IS NULL OR lower(status) = lower(:status)) AND " +
+            "(:species IS NULL OR lower(species) = lower(:species)) AND " +
+            "(:type IS NULL OR lower(type) = lower(:type)) AND " +
+            "(:gender IS NULL OR lower(gender) = lower(:gender))")
+    suspend fun clearAllCharacters(        name: String?,
+                                           status: String?,
+                                           species: String?,
+                                           type: String?,
+                                           gender: String?)
 
     @Transaction
-    suspend fun refresh(characters: List<CharacterEntity>) {
-        clearAllCharacters()
+    suspend fun refresh(characters: List<CharacterEntity>, filter: CharacterFilter) {
+
         insertCharacters(characters)
     }
 }

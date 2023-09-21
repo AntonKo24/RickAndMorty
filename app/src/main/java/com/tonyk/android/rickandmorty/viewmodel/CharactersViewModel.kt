@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
@@ -44,12 +45,17 @@ class CharactersViewModel @Inject constructor(
 
     private fun loadCharacters() {
         viewModelScope.launch {
-                repository.getCharacters(CharacterFilter())
+                repository.getCharacters(currentFilter)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                 _characters.value = pagingData
             }
         }
+    }
+
+    fun applyFilter(filter : String) {
+        currentFilter = CharacterFilter(name = filter)
+        loadCharacters()
     }
 }
 

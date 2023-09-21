@@ -23,7 +23,8 @@ class CharacterViewHolder(
         binding.characterSpecies.text = characterEntity.species
         binding.characterStatus.text = characterEntity.status
         binding.characterImage.load(characterEntity.image)
-        Log.d("PAgingTest", "${characterEntity.name}")
+
+        Log.d("PAgingTest", "ID NOW : ${characterEntity.id}")
     }
 }
 

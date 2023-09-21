@@ -25,6 +25,7 @@ object DatabaseModule {
     }
 
     @Provides
+    @Singleton
     fun provideCharactersDao(database: LocationsDatabase): CharactersDao {
         return database.charactersDao()
     }

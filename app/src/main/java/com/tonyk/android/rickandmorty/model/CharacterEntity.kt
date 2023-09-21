@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
 @Entity(tableName = "characters")
 @JsonClass(generateAdapter = true)
 data class CharacterEntity (
-    @PrimaryKey val id : String,
+    @PrimaryKey val id : Int,
     @ColumnInfo(name = "name")val name : String,
     @ColumnInfo(name = "species")val species : String,
     @ColumnInfo(name = "status")val status : String,

@@ -25,7 +25,8 @@ class CharacterRepository(
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                initialLoadSize = 20
+                initialLoadSize = 20,
+                prefetchDistance = 1
             ),
             remoteMediator = CharacterRemoteMediator(api, charactersDao, filter),
             pagingSourceFactory = { charactersDao.getAllCharacters(
