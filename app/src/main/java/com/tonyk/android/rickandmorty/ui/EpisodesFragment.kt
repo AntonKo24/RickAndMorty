@@ -29,7 +29,7 @@ class EpisodesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.testToDetails.setOnClickListener {
-            findNavController().navigate(MainPageFragmentDirections.mainPageFragmentToEpisodeDetailsFragment())
+            findNavController().navigate(EpisodesFragmentDirections.actionToEpisodeDetail())
         }
     }
 

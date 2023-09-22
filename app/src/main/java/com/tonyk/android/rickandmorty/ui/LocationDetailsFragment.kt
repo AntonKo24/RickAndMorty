@@ -27,7 +27,7 @@ class LocationDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toCharFromLoc.setOnClickListener {
-            findNavController().navigate(LocationDetailsFragmentDirections.locationDetailsFragmentToCharacterDetailsFragment())
+            findNavController().navigate(LocationDetailsFragmentDirections.actionToCharacterDetail())
         }
     }
 

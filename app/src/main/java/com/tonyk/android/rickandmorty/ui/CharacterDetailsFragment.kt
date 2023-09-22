@@ -27,10 +27,10 @@ class CharacterDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.episodeTest.setOnClickListener {
-            findNavController().navigate(CharacterDetailsFragmentDirections.characterDetailsFragmentToEpisodeDetailsFragment())
+            findNavController().navigate(CharacterDetailsFragmentDirections.actionToLocationDetail())
         }
         binding.locationTest.setOnClickListener {
-            findNavController().navigate(CharacterDetailsFragmentDirections.characterDetailsFragmentToLocationDetailsFragment())
+            findNavController().navigate(CharacterDetailsFragmentDirections.actionToLocationDetail())
         }
     }
 

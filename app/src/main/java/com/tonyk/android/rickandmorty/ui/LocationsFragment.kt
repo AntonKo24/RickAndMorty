@@ -28,7 +28,7 @@ class LocationsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.testToLocation.setOnClickListener {
-            findNavController().navigate(MainPageFragmentDirections.mainPageFragmentToLocationDetailsFragment())
+            findNavController().navigate(LocationsFragmentDirections.actionToLocationDetail())
         }
     }
 
