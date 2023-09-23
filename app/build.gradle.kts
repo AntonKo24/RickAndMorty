@@ -4,7 +4,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs")
-
 }
 
 android {
@@ -63,8 +62,8 @@ dependencies {
 
     implementation("androidx.fragment:fragment-ktx:1.6.1")
 
-    implementation("com.google.dagger:hilt-android:2.46.1")
-    ksp("com.google.dagger:hilt-compiler:2.46.1")
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-compiler:2.48")
 
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
@@ -78,6 +77,7 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.2")
     annotationProcessor("androidx.room:room-compiler:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
+    implementation ("androidx.room:room-paging:2.5.2")
 
     implementation("com.squareup.moshi:moshi:1.14.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
@@ -86,6 +86,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
+    implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
 
 
 }

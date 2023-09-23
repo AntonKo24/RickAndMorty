@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.ui
+package com.tonyk.android.rickandmorty.ui.location
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LocationDetailsFragment : Fragment() {
     private var _binding: FragmentLocationDetailsBinding? = null
     private val binding get() = _binding!!
@@ -25,7 +27,7 @@ class LocationDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toCharFromLoc.setOnClickListener {
-            findNavController().navigate(LocationDetailsFragmentDirections.locationDetailsFragmentToCharacterDetailsFragment())
+            findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails())
         }
     }
 
