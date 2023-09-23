@@ -1,11 +1,14 @@
-package com.tonyk.android.rickandmorty
+package com.tonyk.android.rickandmorty.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.view.isGone
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.ActivityMainBinding
+import com.tonyk.android.rickandmorty.util.NetworkChecker
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.characterDetailsFragment -> false
                 else -> true
             }
-            binding.bottomNavigationView.isGone = isVisibleBottomBar
+            binding.bottomNavigationView.isVisible = isVisibleBottomBar
         }
+        Toast.makeText(this, "${NetworkChecker.isNetworkAvailable(this)}", Toast.LENGTH_LONG).show()
     }
 }
