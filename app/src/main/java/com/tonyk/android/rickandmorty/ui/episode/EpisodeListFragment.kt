@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.ui
+package com.tonyk.android.rickandmorty.ui.episode
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
+import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LocationDetailsFragment : Fragment() {
-    private var _binding: FragmentLocationDetailsBinding? = null
+class EpisodeListFragment : Fragment() {
+    private var _binding: FragmentEpisodesBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,15 +19,15 @@ class LocationDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLocationDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentEpisodesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toCharFromLoc.setOnClickListener {
-            findNavController().navigate(LocationDetailsFragmentDirections.actionToCharacterDetail())
+        binding.testToDetails.setOnClickListener {
+            findNavController().navigate(EpisodeListFragmentDirections.toEpisodeDetail())
         }
     }
 

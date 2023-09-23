@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.ui
+package com.tonyk.android.rickandmorty.ui.character
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,9 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
-class CharactersFragment : Fragment() {
+class CharacterListFragment : Fragment() {
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
     private val charactersViewModel: CharactersViewModel by viewModels()
@@ -35,8 +34,6 @@ class CharactersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         val adapter = CharactersListAdapter()
 
@@ -54,7 +51,7 @@ class CharactersFragment : Fragment() {
         binding.characterSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                charactersViewModel.applyFilter(query)
+                    charactersViewModel.applyFilter(query)
                 }
                 return true
             }
@@ -65,9 +62,6 @@ class CharactersFragment : Fragment() {
                 return true
             }
         })
-
-
-
     }
 
     override fun onDestroyView() {

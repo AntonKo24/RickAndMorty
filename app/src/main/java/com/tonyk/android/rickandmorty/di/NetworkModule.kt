@@ -1,7 +1,6 @@
 package com.tonyk.android.rickandmorty.di
 
 import com.tonyk.android.rickandmorty.api.RickAndMortyApi
-import com.tonyk.android.rickandmorty.api.RickAndMortyInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +18,6 @@ object NetworkModule {
     @Singleton
     fun providerOkHttpClient() : OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(RickAndMortyInterceptor())
             .build()
     }
 

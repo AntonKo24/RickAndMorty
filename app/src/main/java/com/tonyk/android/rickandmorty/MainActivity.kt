@@ -2,14 +2,11 @@ package com.tonyk.android.rickandmorty
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.view.isVisible
+import androidx.core.view.isGone
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.tonyk.android.rickandmorty.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-
-
-
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -28,12 +25,12 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isVisibleBottomBar = when (destination.id) {
-                R.id.locationDetailFragment -> false
-                R.id.episodeDetailFragment -> false
-                R.id.characterDetailFragment -> false
+                R.id.locationDetailsFragment -> false
+                R.id.episodeDetailsFragment -> false
+                R.id.characterDetailsFragment -> false
                 else -> true
             }
-            binding.bottomNavigationView?.isVisible = isVisibleBottomBar
+            binding.bottomNavigationView.isGone = isVisibleBottomBar
         }
     }
 }

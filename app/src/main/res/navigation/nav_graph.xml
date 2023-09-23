@@ -1,77 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/charactersFragment">
+    app:startDestination="@id/characterListFragment">
 
     <fragment
-        android:id="@+id/charactersFragment"
-        android:name="com.tonyk.android.rickandmorty.ui.CharactersFragment"
-        android:label="CharacterListFragment"
-        >
+        android:id="@+id/characterListFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.character.CharacterListFragment"
+        android:label="CharacterListFragment">
         <action
-            android:id="@+id/action_characterListFragment_to_characterDetailFragment"
-            app:destination="@id/characterDetailFragment"
-         />
-
+            android:id="@+id/toCharacterDetail"
+            app:destination="@id/characterDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/characterDetailFragment"
-        android:name="com.tonyk.android.rickandmorty.ui.CharacterDetailsFragment"
-        android:label="CharacterDetailFragment"
-       >
+        android:id="@+id/characterDetailsFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.character.CharacterDetailsFragment"
+        android:label="CharacterDetailFragment">
         <action
-            android:id="@+id/actionToLocationDetail"
-            app:destination="@id/locationDetailFragment"
-         />
+            android:id="@+id/toLocationDetails"
+            app:destination="@id/locationDetailsFragment" />
         <action
-            android:id="@+id/action_characterDetailFragment_to_episodeListFragment"
+            android:id="@+id/toEpisodeList"
             app:destination="@id/episodeListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/locationDetailFragment"
-        android:name="com.tonyk.android.rickandmorty.ui.LocationDetailsFragment"
-        android:label="LocationDetailFragment"
-       >
-
+        android:id="@+id/locationDetailsFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.location.LocationDetailsFragment"
+        android:label="LocationDetailFragment">
         <action
-            android:id="@+id/actionToCharacterDetail"
-            app:destination="@id/characterDetailFragment"
+            android:id="@+id/toCharacterDetails"
+            app:destination="@id/characterDetailsFragment"
             app:launchSingleTop="false"
             app:popUpToInclusive="false" />
         <action
-            android:id="@+id/actionToLocationList"
+            android:id="@+id/toLocationList"
             app:destination="@id/locationListFragment" />
     </fragment>
     <fragment
         android:id="@+id/locationListFragment"
-        android:name="com.tonyk.android.rickandmorty.ui.LocationsFragment"
-        android:label="LocationListFragment"
-    >
+        android:name="com.tonyk.android.rickandmorty.ui.location.LocationListFragment"
+        android:label="LocationListFragment">
         <action
-            android:id="@+id/actionToLocationDetail"
-            app:destination="@id/locationDetailFragment"
-          />
+            android:id="@+id/toLocationDetails"
+            app:destination="@id/locationDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/episodeListFragment"
-        android:name="com.tonyk.android.rickandmorty.ui.EpisodesFragment"
-        android:label="EpisodeListFragment"
-       >
+        android:name="com.tonyk.android.rickandmorty.ui.episode.EpisodeListFragment"
+        android:label="EpisodeListFragment">
         <action
-            android:id="@+id/actionToEpisodeDetail"
-            app:destination="@id/episodeDetailFragment"
-            />
+            android:id="@+id/toEpisodeDetail"
+            app:destination="@id/episodeDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/episodeDetailFragment"
-        android:name="com.tonyk.android.rickandmorty.ui.EpisodeDetailsFragment"
-        android:label="EpisodeDetailFragment"
-     >
+        android:id="@+id/episodeDetailsFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.episode.EpisodeDetailsFragment"
+        android:label="EpisodeDetailFragment">
         <action
-            android:id="@+id/actionToCharacterDetailFragment"
-            app:destination="@id/characterDetailFragment"
-          />
+            android:id="@+id/to_CharacterDetails"
+            app:destination="@id/characterDetailsFragment" />
     </fragment>
 </navigation>
