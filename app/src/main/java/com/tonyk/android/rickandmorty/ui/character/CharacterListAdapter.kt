@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tonyk.android.rickandmorty.databinding.CharactersListItemBinding
-import com.tonyk.android.rickandmorty.model.CharacterEntity
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 
 class CharacterViewHolder(
     private val binding: CharactersListItemBinding
@@ -16,17 +16,19 @@ class CharacterViewHolder(
     fun bind(
         characterEntity: CharacterEntity
     ) {
-        binding.characterGender.text = characterEntity.gender
-        binding.characterName.text = characterEntity.name
-        binding.characterSpecies.text = characterEntity.species
-        binding.characterStatus.text = characterEntity.status
-        binding.characterImage.load(characterEntity.image)
-        Log.d("PAgingTest", "ID NOW : ${characterEntity.id}")
+        binding.apply {
+            characterGender.text = characterEntity.gender
+            characterName.text = characterEntity.name
+            characterSpecies.text = characterEntity.species
+            characterStatus.text = characterEntity.status
+            characterImage.load(characterEntity.image)
+        }
+        Log.d("PAgingTest333", "EPISODES NOW : ${characterEntity.location.name}")
     }
 }
 
 class CharactersListAdapter : PagingDataAdapter<CharacterEntity, CharacterViewHolder>(
-    ContactDiffCallback()
+    CharacterDiffCallback()
 ) {
 
     override fun onCreateViewHolder(
@@ -45,7 +47,7 @@ class CharactersListAdapter : PagingDataAdapter<CharacterEntity, CharacterViewHo
     }
 }
 
-class ContactDiffCallback : DiffUtil.ItemCallback<CharacterEntity>() {
+class CharacterDiffCallback : DiffUtil.ItemCallback<CharacterEntity>() {
     override fun areItemsTheSame(oldItem: CharacterEntity, newItem: CharacterEntity): Boolean {
         return oldItem.id == newItem.id
     }

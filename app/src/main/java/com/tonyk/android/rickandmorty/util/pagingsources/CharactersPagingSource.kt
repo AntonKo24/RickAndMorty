@@ -5,8 +5,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
 import com.tonyk.android.rickandmorty.data.database.CharactersDao
-import com.tonyk.android.rickandmorty.model.CharacterEntity
-import com.tonyk.android.rickandmorty.model.CharacterFilter
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import com.tonyk.android.rickandmorty.util.Constants.FIRST_PAGE_INDEX
 
 

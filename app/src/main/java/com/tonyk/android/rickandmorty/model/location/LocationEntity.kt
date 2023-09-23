@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.model
+package com.tonyk.android.rickandmorty.model.location
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,6 @@ class LocationEntity (
     @PrimaryKey val id: String,
     val name : String,
     val type : String,
-    val dimension : String
+    val dimension : String,
+    val residents : List<String>
 )
