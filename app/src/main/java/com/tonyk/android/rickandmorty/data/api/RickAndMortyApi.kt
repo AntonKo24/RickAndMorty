@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.api
+package com.tonyk.android.rickandmorty.data.api
 
 import com.tonyk.android.rickandmorty.model.CharactersResponse
 import retrofit2.http.GET

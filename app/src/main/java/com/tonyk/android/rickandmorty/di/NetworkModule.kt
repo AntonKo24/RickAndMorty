@@ -1,6 +1,6 @@
 package com.tonyk.android.rickandmorty.di
 
-import com.tonyk.android.rickandmorty.api.RickAndMortyApi
+import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,28 +1,23 @@
 package com.tonyk.android.rickandmorty
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.tonyk.android.rickandmorty.api.RickAndMortyApi
-import com.tonyk.android.rickandmorty.database.CharactersDao
+import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
+import com.tonyk.android.rickandmorty.data.database.CharactersDao
 import com.tonyk.android.rickandmorty.model.CharacterEntity
 import com.tonyk.android.rickandmorty.model.CharacterFilter
+import com.tonyk.android.rickandmorty.util.Constants.PAGE_SIZE
+import com.tonyk.android.rickandmorty.util.pagingsources.CharactersPagingDataSource
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(ExperimentalPagingApi::class)
 class CharacterRepository(
     private val api: RickAndMortyApi,
     private val charactersDao: CharactersDao
 ) {
-    fun getCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>> {
+    fun getOfflineCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = PAGE_SIZE,
-                initialLoadSize = 20,
-                prefetchDistance = 1
-            ),
-            remoteMediator = CharacterRemoteMediator(api, charactersDao, filter),
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             pagingSourceFactory = {
                 charactersDao.getAllCharacters(
                     name = filter.name,
@@ -32,18 +27,13 @@ class CharacterRepository(
                     gender = filter.gender
                 )
             }
-        )
-            .flow
+        ).flow
     }
 
-    companion object {
-        private const val PAGE_SIZE = 20
+    fun getOnlineCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = { CharactersPagingDataSource(api, charactersDao, filter) }
+        ).flow
     }
 }
-
-
-
-
-
-
-

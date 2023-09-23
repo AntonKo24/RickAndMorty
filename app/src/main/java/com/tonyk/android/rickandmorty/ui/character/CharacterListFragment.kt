@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersBinding
+import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +24,7 @@ import kotlinx.coroutines.launch
 class CharacterListFragment : Fragment() {
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
-    private val charactersViewModel: CharactersViewModel by viewModels()
+    private val charactersViewModel: CharactersViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,13 +38,15 @@ class CharacterListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val status = NetworkChecker.isNetworkAvailable(requireContext())
+        charactersViewModel.getStatus(status)
+
         val adapter = CharactersListAdapter()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 charactersViewModel.characters.collectLatest { pagingData ->
                     adapter.submitData(pagingData)
-
                 }
             }
         }
@@ -62,6 +67,8 @@ class CharacterListFragment : Fragment() {
                 return true
             }
         })
+
+
     }
 
     override fun onDestroyView() {

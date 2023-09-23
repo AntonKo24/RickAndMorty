@@ -1,6 +1,8 @@
 package com.tonyk.android.rickandmorty.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -11,8 +13,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
@@ -22,18 +27,29 @@ class CharactersViewModel @Inject constructor(
     val characters: StateFlow<PagingData<CharacterEntity>> = _characters.asStateFlow()
 
     private var currentFilter: CharacterFilter = CharacterFilter()
+    private var networkStatus: Boolean = false
 
-    init {
-        loadCharacters()
+    fun getStatus(status: Boolean) {
+        networkStatus = status
+        loadCharacters() // Обновляем данные при изменении статуса сети
     }
+
 
     private fun loadCharacters() {
         viewModelScope.launch {
-            repository.getCharacters(currentFilter)
-                .cachedIn(viewModelScope)
-                .collect { pagingData ->
-                    _characters.value = pagingData
-                }
+            if (networkStatus) {
+                repository.getOnlineCharacters(currentFilter)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _characters.value = pagingData
+                    }
+            } else {
+                repository.getOfflineCharacters(currentFilter)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _characters.value = pagingData
+                    }
+            }
         }
     }
 
@@ -42,6 +58,7 @@ class CharactersViewModel @Inject constructor(
         loadCharacters()
     }
 }
+
 
 
 

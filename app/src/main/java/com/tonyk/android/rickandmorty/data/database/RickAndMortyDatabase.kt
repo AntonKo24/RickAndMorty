@@ -1,9 +1,8 @@
-package com.tonyk.android.rickandmorty.database
+package com.tonyk.android.rickandmorty.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.tonyk.android.rickandmorty.model.CharacterEntity
-import com.tonyk.android.rickandmorty.model.CharactersResponse
 import com.tonyk.android.rickandmorty.model.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.LocationEntity
 

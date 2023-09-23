@@ -2,8 +2,8 @@ package com.tonyk.android.rickandmorty.di
 
 import android.content.Context
 import androidx.room.Room
-import com.tonyk.android.rickandmorty.database.CharactersDao
-import com.tonyk.android.rickandmorty.database.LocationsDatabase
+import com.tonyk.android.rickandmorty.data.database.CharactersDao
+import com.tonyk.android.rickandmorty.data.database.LocationsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
