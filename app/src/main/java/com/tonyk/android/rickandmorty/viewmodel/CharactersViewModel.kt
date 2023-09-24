@@ -23,9 +23,6 @@ class CharactersViewModel @Inject constructor(
     private val _characters = MutableStateFlow<PagingData<CharacterEntity>>(PagingData.empty())
     val characters: StateFlow<PagingData<CharacterEntity>> = _characters.asStateFlow()
 
-
-
-
     private var currentFilter: CharacterFilter = CharacterFilter()
     private var networkStatus: Boolean = false
 
@@ -33,7 +30,6 @@ class CharactersViewModel @Inject constructor(
         networkStatus = status
         loadCharacters() // Обновляем данные при изменении статуса сети
     }
-
 
     private fun loadCharacters() {
         viewModelScope.launch {

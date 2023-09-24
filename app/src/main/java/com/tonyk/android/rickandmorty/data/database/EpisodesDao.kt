@@ -10,7 +10,7 @@ import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 @Dao
 interface EpisodesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEpisodes(characters: List<EpisodeEntity>)
+    suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
     @Query(
         "SELECT * FROM episodes WHERE " +

@@ -2,10 +2,12 @@ package com.tonyk.android.rickandmorty.model.episode
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.squareup.moshi.JsonClass
 
 
 @Entity(tableName = "episodes")
-class EpisodeEntity (
+@JsonClass(generateAdapter = true)
+data class EpisodeEntity (
     @PrimaryKey val id : String,
     val name : String,
     val episode : String,

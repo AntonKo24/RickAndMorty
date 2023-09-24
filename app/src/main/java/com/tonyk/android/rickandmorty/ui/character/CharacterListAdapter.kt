@@ -7,11 +7,11 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.tonyk.android.rickandmorty.databinding.CharactersListItemBinding
+import com.tonyk.android.rickandmorty.databinding.CharacterListItemBinding
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 
 class CharacterViewHolder(
-    private val binding: CharactersListItemBinding
+    private val binding: CharacterListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
         characterEntity: CharacterEntity
@@ -36,7 +36,7 @@ class CharactersListAdapter : PagingDataAdapter<CharacterEntity, CharacterViewHo
         viewType: Int
     ): CharacterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return CharacterViewHolder(CharactersListItemBinding.inflate(inflater, parent, false))
+        return CharacterViewHolder(CharacterListItemBinding.inflate(inflater, parent, false))
     }
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
