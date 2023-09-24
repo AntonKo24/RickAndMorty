@@ -13,17 +13,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     @Provides
     @Singleton
-    fun providerOkHttpClient() : OkHttpClient {
+    fun providerOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideWeatherApi(okHttpClient: OkHttpClient): RickAndMortyApi {
+    fun provideRickAndMortyApi(okHttpClient: OkHttpClient): RickAndMortyApi {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://rickandmortyapi.com/api/")
             .addConverterFactory(MoshiConverterFactory.create())
@@ -31,5 +30,4 @@ object NetworkModule {
             .build()
         return retrofit.create(RickAndMortyApi::class.java)
     }
-
 }

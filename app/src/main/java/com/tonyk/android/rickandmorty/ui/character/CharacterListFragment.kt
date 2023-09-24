@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class CharacterListFragment : Fragment() {
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
-    private val charactersViewModel: CharactersViewModel by activityViewModels()
+    private val charactersViewModel: CharactersViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
