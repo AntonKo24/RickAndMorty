@@ -11,7 +11,7 @@ import com.tonyk.android.rickandmorty.util.CharacterOriginConverter
 import com.tonyk.android.rickandmorty.util.conventers.ListStringConverter
 
 
-@Database(entities = [CharacterEntity::class, LocationEntity::class, EpisodeEntity::class], version = 1)
+@Database(entities = [CharacterEntity::class, LocationEntity::class, EpisodeEntity::class], version = 1, exportSchema = false)
 @TypeConverters(
     ListStringConverter::class,
     CharacterLocationConverter::class,

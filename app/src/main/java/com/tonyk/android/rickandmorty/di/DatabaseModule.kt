@@ -3,6 +3,8 @@ package com.tonyk.android.rickandmorty.di
 import android.content.Context
 import androidx.room.Room
 import com.tonyk.android.rickandmorty.data.database.CharactersDao
+import com.tonyk.android.rickandmorty.data.database.EpisodesDao
+import com.tonyk.android.rickandmorty.data.database.LocationsDao
 import com.tonyk.android.rickandmorty.data.database.LocationsDatabase
 import dagger.Module
 import dagger.Provides
@@ -30,5 +32,15 @@ object DatabaseModule {
         return database.charactersDao()
     }
 
-    // Добавьте аналогичные методы для LocationsDao и EpisodesDao
+    @Provides
+    @Singleton
+    fun provideEpisodesDao(database: LocationsDatabase): EpisodesDao {
+        return database.episodesDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationsDao(database: LocationsDatabase): LocationsDao {
+        return database.locationsDao()
+    }
 }

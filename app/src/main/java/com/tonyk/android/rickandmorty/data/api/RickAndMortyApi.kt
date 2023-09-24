@@ -2,7 +2,10 @@ package com.tonyk.android.rickandmorty.data.api
 
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.character.CharactersResponse
+import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodesResponse
+import com.tonyk.android.rickandmorty.model.location.LocationEntity
+import com.tonyk.android.rickandmorty.model.location.LocationsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -27,22 +30,28 @@ interface RickAndMortyApi {
     @GET("episode")
     suspend fun fetchAllEpisodes(
         @Query("page") page: Int,
-        @Query("name") name : String?,
-        @Query("episode") episode : String?
-    ) : EpisodesResponse
+        @Query("name") name: String?,
+        @Query("episode") episode: String?
+    ): EpisodesResponse
 
     @GET("episode/{id}")
-    suspend fun fetchEpisodeById(@Path("id") id: String): CharacterEntity
+    suspend fun fetchEpisodeById(@Path("id") id: String): EpisodeEntity
 
-    @GET("episode")
-    suspend fun fetchMultipleEpisodesByID(@Query("episode") id: List<String>)
+    @GET("episode/{ids}")
+    suspend fun fetchMultipleEpisodesByID(@Path("ids") ids: List<String>): List<EpisodeEntity>
 
     @GET("location")
     suspend fun fetchAllLocations(
-        @Query("page")page: Int,
+        @Query("page") page: Int,
         @Query("name") name: String?,
         @Query("type") type: String?,
-        @Query("dimension") dimension : String?
-    )
+        @Query("dimension") dimension: String?
+    ): LocationsResponse
+
+    @GET("location")
+    suspend fun fetLocationById(@Path("id") id: String): LocationEntity
+
+    @GET("episode/{ids}")
+    suspend fun fetchMultipleLocationsByID(@Path("ids") ids: List<String>): List<LocationEntity>
 }
 

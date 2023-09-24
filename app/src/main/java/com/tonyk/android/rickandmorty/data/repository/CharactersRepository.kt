@@ -5,7 +5,7 @@ import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import kotlinx.coroutines.flow.Flow
 
-interface CharacterRepository {
+interface CharactersRepository {
         fun getOfflineCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>>
         fun getOnlineCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>>
 }

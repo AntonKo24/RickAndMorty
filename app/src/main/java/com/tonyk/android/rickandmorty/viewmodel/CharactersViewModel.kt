@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.tonyk.android.rickandmorty.CharacterRepositoryImpl
+import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
-    private val repository: CharacterRepositoryImpl
+    private val repository: CharactersRepositoryImpl
 ) : ViewModel() {
     private val _characters = MutableStateFlow<PagingData<CharacterEntity>>(PagingData.empty())
     val characters: StateFlow<PagingData<CharacterEntity>> = _characters.asStateFlow()
