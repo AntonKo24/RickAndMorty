@@ -21,8 +21,6 @@ interface RickAndMortyApi {
         @Query("gender") gender: String?
     ): CharactersResponse
 
-    @GET("character/{id}")
-    suspend fun fetchCharacterByID(@Path("id") id: String): CharacterEntity
 
     @GET("character/{ids}")
     suspend fun fetchMultipleCharactersByID(@Path("ids") ids: List<String>): List<CharacterEntity>
@@ -34,8 +32,6 @@ interface RickAndMortyApi {
         @Query("episode") episode: String?
     ): EpisodesResponse
 
-    @GET("episode/{id}")
-    suspend fun fetchEpisodeById(@Path("id") id: String): EpisodeEntity
 
     @GET("episode/{ids}")
     suspend fun fetchMultipleEpisodesByID(@Path("ids") ids: List<String>): List<EpisodeEntity>
@@ -51,7 +47,5 @@ interface RickAndMortyApi {
     @GET("location")
     suspend fun fetLocationById(@Path("id") id: String): LocationEntity
 
-    @GET("episode/{ids}")
-    suspend fun fetchMultipleLocationsByID(@Path("ids") ids: List<String>): List<LocationEntity>
 }
 

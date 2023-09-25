@@ -31,14 +31,13 @@ class EpisodesViewModel @Inject constructor(
     }
 
     private fun loadEpisodes() {
-        Log.d("PAgingTest33333", "EPISODES COLLECTIN????")
         viewModelScope.launch {
             if (networkStatus) {
                 repository.getOnlineEpisodes(currentFilter)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _episodes.value = pagingData
-                        Log.d("PAgingTest33333", "EPISODES 1")
+
                     }
             } else {
                 repository.getOfflineEpisodes(currentFilter)

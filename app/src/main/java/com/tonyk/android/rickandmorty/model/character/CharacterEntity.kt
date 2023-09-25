@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.model.character
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
@@ -15,6 +16,6 @@ data class CharacterEntity(
     val image: String,
     val type: String,
     val episode: List<String>,
-    val origin: CharacterOrigin,
-    val location: CharacterLocation
+    @Embedded val origin: CharacterOrigin,
+    @Embedded  val location: CharacterLocation
 )
