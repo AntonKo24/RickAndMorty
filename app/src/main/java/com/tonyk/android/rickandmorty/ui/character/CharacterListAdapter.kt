@@ -14,7 +14,8 @@ class CharacterViewHolder(
     private val binding: CharacterListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
-        characterEntity: CharacterEntity
+        characterEntity: CharacterEntity,
+        onCharacterClicked: (character: CharacterEntity) -> Unit
     ) {
         binding.apply {
             characterGender.text = characterEntity.gender
@@ -22,12 +23,14 @@ class CharacterViewHolder(
             characterSpecies.text = characterEntity.species
             characterStatus.text = characterEntity.status
             characterImage.load(characterEntity.image)
+
+            root.setOnClickListener { onCharacterClicked(characterEntity) }
         }
         Log.d("PAgingTest333", "EPISODES NOW : ${characterEntity.location.name}")
     }
 }
 
-class CharactersListAdapter : PagingDataAdapter<CharacterEntity, CharacterViewHolder>(
+class CharactersListAdapter (private val onCharacterClicked: (character: CharacterEntity) -> Unit) : PagingDataAdapter<CharacterEntity, CharacterViewHolder>(
     CharacterDiffCallback()
 ) {
 
@@ -42,7 +45,7 @@ class CharactersListAdapter : PagingDataAdapter<CharacterEntity, CharacterViewHo
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
         val characterEntity = getItem(position)
         if (characterEntity != null) {
-            holder.bind(characterEntity)
+            holder.bind(characterEntity, onCharacterClicked = onCharacterClicked)
         }
     }
 }

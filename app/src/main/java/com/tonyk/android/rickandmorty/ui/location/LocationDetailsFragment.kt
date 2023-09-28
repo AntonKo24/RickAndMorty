@@ -26,9 +26,7 @@ class LocationDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toCharFromLoc.setOnClickListener {
-            findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails())
-        }
+
     }
 
     override fun onDestroyView() {

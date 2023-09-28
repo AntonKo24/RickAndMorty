@@ -25,9 +25,7 @@ class EpisodeDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toCharTest.setOnClickListener {
-            findNavController().navigate(EpisodeDetailsFragmentDirections.toCharacterDetails())
-        }
+
     }
 
     override fun onDestroyView() {

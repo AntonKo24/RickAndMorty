@@ -35,4 +35,8 @@ class EpisodesRepositoryImpl @Inject constructor(
             pagingSourceFactory = { EpisodesPagingSource(api, episodesDao, filter) }
         ).flow
     }
+
+    suspend fun fetchMultipleEpisodesByID (ids : List<String>) : List<EpisodeEntity> {
+       return api.fetchMultipleEpisodesByID(ids)
+    }
 }

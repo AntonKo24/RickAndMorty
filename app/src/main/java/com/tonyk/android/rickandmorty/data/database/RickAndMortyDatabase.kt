@@ -6,8 +6,6 @@ import androidx.room.TypeConverters
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
-import com.tonyk.android.rickandmorty.util.CharacterLocationConverter
-import com.tonyk.android.rickandmorty.util.CharacterOriginConverter
 import com.tonyk.android.rickandmorty.util.conventers.ListStringConverter
 
 

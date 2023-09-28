@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersBinding
@@ -41,11 +43,17 @@ class CharacterListFragment : Fragment() {
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         charactersViewModel.getStatus(status)
 
-        val adapter = CharactersListAdapter()
+        val adapter = CharactersListAdapter(
+            onCharacterClicked = {
+                episode ->
+                findNavController().navigate(CharacterListFragmentDirections.toCharacterDetail(episode))
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                charactersViewModel.characters.collectLatest { pagingData ->
+                charactersViewModel.characters.collect { pagingData ->
+                    binding.charactersRcv.adapter = adapter
                     adapter.submitData(pagingData)
                 }
             }

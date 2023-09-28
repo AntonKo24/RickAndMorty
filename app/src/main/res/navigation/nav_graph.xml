@@ -22,6 +22,9 @@
         <action
             android:id="@+id/toEpisodeList"
             app:destination="@id/episodeListFragment" />
+        <argument
+            android:name="character"
+            app:argType="com.tonyk.android.rickandmorty.model.character.CharacterEntity" />
     </fragment>
     <fragment
         android:id="@+id/locationDetailsFragment"
