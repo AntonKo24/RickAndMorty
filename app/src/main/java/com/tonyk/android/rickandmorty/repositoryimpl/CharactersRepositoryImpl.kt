@@ -26,7 +26,8 @@ class CharactersRepositoryImpl @Inject constructor(
                     status = filter.status,
                     species = filter.species,
                     type = filter.type,
-                    gender = filter.gender
+                    gender = filter.gender,
+                    id = filter.id
                 )
             }
         ).flow
@@ -38,4 +39,10 @@ class CharactersRepositoryImpl @Inject constructor(
             pagingSourceFactory = { CharactersPagingDataSource(api, charactersDao, filter) }
         ).flow
     }
+
+    suspend fun findAndSave(ids: List<String>) {
+       val res = api.fetchMultipleCharactersByID(ids)
+        charactersDao.insertCharacters(res)
+    }
+
 }

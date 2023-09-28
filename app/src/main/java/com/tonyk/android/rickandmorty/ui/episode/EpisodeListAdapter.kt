@@ -7,24 +7,29 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.rickandmorty.databinding.EpisodeListItemBinding
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
+import java.security.interfaces.ECPublicKey
 
 class EpisodeViewHolder(
     private val binding: EpisodeListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
-        episodeEntity: EpisodeEntity
+        episodeEntity: EpisodeEntity,
+        onEpisodeClicked: (episode: EpisodeEntity) -> Unit
     ) {
         binding.apply {
             episodeNameTxt.text = episodeEntity.name
             episodeNumberTxt.text = episodeEntity.episode
             airDateTxt.text = episodeEntity.air_date
+
+            root.setOnClickListener { onEpisodeClicked(episodeEntity) }
         }
         Log.d("PAgingTest33333", "EPISODES NOW : ${episodeEntity.name}")
     }
 }
 
-class EpisodeListAdapter : PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>(
+class EpisodeListAdapter(private val onEpisodeClicked: (episode: EpisodeEntity) -> Unit) : PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>(
     EpisodeDiffCallback()
 ) {
 
@@ -39,7 +44,7 @@ class EpisodeListAdapter : PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>(
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val episodeEntity = getItem(position)
         if (episodeEntity != null) {
-            holder.bind(episodeEntity)
+            holder.bind(episodeEntity, onEpisodeClicked)
         }
     }
 }

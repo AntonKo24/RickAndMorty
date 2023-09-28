@@ -11,27 +11,27 @@ import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import androidx.recyclerview.widget.ListAdapter
 
 import coil.load
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 
 
 class EpListVH(
     private val binding: EpisodeListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
-        episodeEntity: EpisodeEntity
+        episodeEntity: EpisodeEntity,
+        onEpisodeClicked: (episodeEntity: EpisodeEntity) -> Unit
     ) {
         binding.apply {
             episodeNameTxt.text = episodeEntity.name
             episodeNumberTxt.text = episodeEntity.episode
             airDateTxt.text = episodeEntity.air_date
 
-
+            root.setOnClickListener { onEpisodeClicked(episodeEntity) }
         }
     }
 }
 
-class EpListCharAdapter(
-
-) : ListAdapter<EpisodeEntity, EpListVH>(ContactDiffCallback()) {
+class EpListCharAdapter(private val onEpisodeClicked: (episodeEntity: EpisodeEntity) -> Unit) : ListAdapter<EpisodeEntity, EpListVH>(ContactDiffCallback()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -42,7 +42,7 @@ class EpListCharAdapter(
 
     override fun onBindViewHolder(holder: EpListVH, position: Int) {
         val contact = getItem(position)
-        holder.bind(contact)
+        holder.bind(contact, onEpisodeClicked)
     }
 }
 

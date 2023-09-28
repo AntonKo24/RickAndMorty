@@ -12,12 +12,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.tonyk.android.rickandmorty.databinding.FragmentCharacterDetailsBinding
-import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -25,7 +24,7 @@ class CharacterDetailsFragment : Fragment() {
     private var _binding: FragmentCharacterDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: CharacterDetailsFragmentArgs by navArgs()
-    private val detVM : CharacterDetailsViewModel by viewModels()
+    private val detVM: CharacterDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,11 +46,24 @@ class CharacterDetailsFragment : Fragment() {
             ld.add(lastDigit)
         }
 
+        binding.charDetailsName.text = args.character.name
+        binding.characterPhoto.load(args.character.image)
+        binding.charLocationName.text = args.character.location.name
+
+
         detVM.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
 
         binding.charEpisodesList.layoutManager = LinearLayoutManager(context)
 
-        val adapter = EpListCharAdapter()
+        val adapter = EpListCharAdapter(
+            onEpisodeClicked = {
+                findNavController().navigate(
+                    CharacterDetailsFragmentDirections.toEpisodeDetailsFragment(
+                        it
+                    )
+                )
+            }
+        )
 
         binding.charEpisodesList.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {

@@ -5,15 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
+import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
+import com.tonyk.android.rickandmorty.util.NetworkChecker
+import com.tonyk.android.rickandmorty.viewmodel.LocationDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LocationDetailsFragment : Fragment() {
     private var _binding: FragmentLocationDetailsBinding? = null
     private val binding get() = _binding!!
-
+    private val args: LocationDetailsFragmentArgs by navArgs()
+    private val detVM: LocationDetailViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,7 +37,32 @@ class LocationDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val urls = args.location.residents
+        val ld = mutableListOf<String>()
+        for (url in urls) {
+            val parts = url.split('/')
+            val lastDigit = parts.last()
+            ld.add(lastDigit)
+        }
 
+        detVM.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
+
+        binding.locationCharList.layoutManager = LinearLayoutManager(context)
+
+        val adapter = CharactersListAdapter(
+            onCharacterClicked = { it ->
+                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it))
+            }
+        )
+
+        binding.locationCharList.adapter = adapter
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                detVM.characters.collect() { data ->
+                    adapter.submitData(data)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

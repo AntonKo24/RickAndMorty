@@ -41,7 +41,11 @@ class LocationListFragment : Fragment() {
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         locationsViewModel.getStatus(status)
 
-        val adapter = LocationListAdapter()
+        val adapter = LocationListAdapter(
+            onEpisodeClicked = {
+                findNavController().navigate(LocationListFragmentDirections.toLocationDetails(it))
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

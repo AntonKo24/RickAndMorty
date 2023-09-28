@@ -20,5 +20,5 @@ data class CharacterEntity(
     val type: String,
     val episode: List<String>,
     @Embedded val origin: CharacterOrigin,
-    @Embedded  val location: CharacterLocation
+    @Embedded val location: CharacterLocation
 ) : Parcelable

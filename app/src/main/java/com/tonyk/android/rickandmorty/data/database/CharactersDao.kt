@@ -14,6 +14,7 @@ interface CharactersDao {
 
     @Query(
         "SELECT * FROM characters WHERE " +
+                "(id IN (:id)) AND " +
                 "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
                 "(:status IS NULL OR lower(status) = lower(:status)) AND " +
                 "(:species IS NULL OR lower(species) = lower(:species)) AND " +
@@ -21,11 +22,12 @@ interface CharactersDao {
                 "(:gender IS NULL OR lower(gender) = lower(:gender))"
     )
     fun getAllCharacters(
+        id : List<String>?,
         name: String?,
         status: String?,
         species: String?,
         type: String?,
-        gender: String?
+        gender: String?,
     ): PagingSource<Int, CharacterEntity>
 }
 

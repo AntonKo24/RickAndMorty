@@ -45,14 +45,14 @@ class CharacterListFragment : Fragment() {
 
         val adapter = CharactersListAdapter(
             onCharacterClicked = {
-                episode ->
-                findNavController().navigate(CharacterListFragmentDirections.toCharacterDetail(episode))
+                character ->
+                findNavController().navigate(CharacterListFragmentDirections.toCharacterDetail(character))
             }
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                charactersViewModel.characters.collect { pagingData ->
+                charactersViewModel.characters.collectLatest { pagingData ->
                     binding.charactersRcv.adapter = adapter
                     adapter.submitData(pagingData)
                 }

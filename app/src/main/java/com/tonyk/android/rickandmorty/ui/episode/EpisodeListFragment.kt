@@ -15,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesBinding
+import com.tonyk.android.rickandmorty.ui.character.CharacterListFragmentDirections
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
@@ -43,7 +44,12 @@ class EpisodeListFragment : Fragment() {
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         episodesViewModel.getStatus(status)
 
-        val adapter = EpisodeListAdapter()
+        val adapter = EpisodeListAdapter(
+            onEpisodeClicked = {
+                    episode ->
+                findNavController().navigate(EpisodeListFragmentDirections.toEpisodeDetail(episode))
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
