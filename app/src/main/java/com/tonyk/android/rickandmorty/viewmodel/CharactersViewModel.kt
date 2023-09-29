@@ -28,31 +28,24 @@ class CharactersViewModel @Inject constructor(
 
     fun getStatus(status: Boolean) {
         networkStatus = status
-        loadCharacters() // Обновляем данные при изменении статуса сети
+        loadCharacters()
     }
 
     private fun loadCharacters() {
         viewModelScope.launch {
-            if (networkStatus) {
-                repository.getOnlineCharacters(currentFilter)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _characters.value = pagingData
-                    }
-            } else {
-                repository.getOfflineCharacters(currentFilter)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _characters.value = pagingData
-                    }
-            }
+            repository.getCharacterList(currentFilter, networkStatus)
+                .cachedIn(viewModelScope)
+                .collect { pagingData ->
+                    _characters.value = pagingData
+                }
         }
     }
 
-    fun applyFilter(filter: String) {
-        currentFilter = CharacterFilter(name = filter)
+    fun applyFilter(filter: CharacterFilter) {
+        currentFilter = filter
         loadCharacters()
     }
+
 }
 
 

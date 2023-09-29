@@ -30,6 +30,7 @@ class CharactersPagingDataSource(
 
                 )
             charactersDao.insertCharacters(apiResponse.results)
+
             var nextPageNumber: Int? = null
             if (apiResponse.info.next != null) {
                 val uri = Uri.parse(apiResponse.info.next)

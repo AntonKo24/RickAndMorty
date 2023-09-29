@@ -31,24 +31,18 @@ class LocationsViewModel @Inject constructor(
 
     private fun loadLocations() {
         viewModelScope.launch {
-            if (networkStatus) {
-                repository.getOnlineLocations(currentFilter)
+
+                repository.getLocationsList(currentFilter, networkStatus)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _locations.value = pagingData
                     }
-            } else {
-                repository.getOfflineLocations(currentFilter)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _locations.value = pagingData
-                    }
-            }
+
         }
     }
 
-    fun applyFilter(filter: String) {
-        currentFilter = LocationFilter(name = filter)
+    fun applyFilter(filter: LocationFilter) {
+        currentFilter = filter
         loadLocations()
     }
 }

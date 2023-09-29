@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
@@ -24,7 +24,7 @@ class LocationDetailsFragment : Fragment() {
     private var _binding: FragmentLocationDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: LocationDetailsFragmentArgs by navArgs()
-    private val detVM: LocationDetailViewModel by viewModels()
+    private val locationDetailsViewmodel: LocationDetailViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,9 +45,14 @@ class LocationDetailsFragment : Fragment() {
             ld.add(lastDigit)
         }
 
-        detVM.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
+        binding.locationName.text = args.location.name
+        binding.locationtypeTxt.text = args.location.type
+        binding.dimensionTxt.text = args.location.dimension
 
-        binding.locationCharList.layoutManager = LinearLayoutManager(context)
+
+        locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
+
+        binding.locationCharList.layoutManager = GridLayoutManager(context, 2)
 
         val adapter = CharactersListAdapter(
             onCharacterClicked = { it ->
@@ -58,7 +63,7 @@ class LocationDetailsFragment : Fragment() {
         binding.locationCharList.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detVM.characters.collect() { data ->
+                locationDetailsViewmodel.characters.collect() { data ->
                     adapter.submitData(data)
                 }
             }

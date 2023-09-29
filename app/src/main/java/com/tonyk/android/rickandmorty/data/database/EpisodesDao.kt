@@ -14,7 +14,6 @@ interface EpisodesDao {
 
     @Query(
         "SELECT * FROM episodes WHERE " +
-
                 "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
                 "(:episode IS NULL OR lower(episode) = lower(:episode)) "
     )

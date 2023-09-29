@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
-import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +20,6 @@ class LocationDetailViewModel @Inject constructor(
 ) : ViewModel() {
     private var networkStatus: Boolean = false
 
-
     private val _characters = MutableStateFlow<PagingData<CharacterEntity>>(PagingData.empty())
     val characters: StateFlow<PagingData<CharacterEntity>> = _characters.asStateFlow()
 
@@ -34,23 +32,13 @@ class LocationDetailViewModel @Inject constructor(
     }
 
     private fun loadCharacter() {
+        if (charactersIDs.isNotEmpty())
         viewModelScope.launch {
-            if (networkStatus) {
-                repository.findAndSave(charactersIDs)
-
-                repository.getCharacterByID(charactersIDs)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _characters.value = pagingData
-                    }
-            }
-            else {
-                repository.getCharacterByID(charactersIDs)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _characters.value = pagingData
-                    }
-            }
+            repository.getCharacterListById(charactersIDs, networkStatus)
+                .cachedIn(viewModelScope)
+                .collect { pagingData ->
+                    _characters.value = pagingData
+                }
         }
     }
 }

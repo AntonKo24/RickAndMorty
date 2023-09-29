@@ -11,15 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodeDetailsBinding
-import com.tonyk.android.rickandmorty.ui.character.CharacterDetailsFragmentArgs
-import com.tonyk.android.rickandmorty.ui.character.CharacterListFragmentDirections
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
-import com.tonyk.android.rickandmorty.ui.character.EpListCharAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
 import com.tonyk.android.rickandmorty.viewmodel.EpisodeDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,7 +24,7 @@ class EpisodeDetailsFragment : Fragment() {
     private var _binding: FragmentEpisodeDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: EpisodeDetailsFragmentArgs by navArgs()
-    private val detVM : EpisodeDetailViewModel by viewModels()
+    private val episodeDetailViewModel : EpisodeDetailViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,12 +46,14 @@ class EpisodeDetailsFragment : Fragment() {
             ld.add(lastDigit)
         }
 
+        binding.airDateEpisode.text = args.episode.air_date
+        binding.episodeNameText.text = args.episode.name
+        binding.episodeNumberText.text = args.episode.episode
 
 
+        episodeDetailViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
 
-        detVM.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
-
-        binding.episodeCharList.layoutManager = LinearLayoutManager(context)
+        binding.episodeCharList.layoutManager = GridLayoutManager(context, 2)
 
         val adapter = CharactersListAdapter(
             onCharacterClicked = {
@@ -68,7 +65,7 @@ class EpisodeDetailsFragment : Fragment() {
         binding.episodeCharList.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detVM.characters.collect() { data ->
+                episodeDetailViewModel.characters.collect() { data ->
                     adapter.submitData(data)
                 }
             }

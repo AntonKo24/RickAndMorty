@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesBinding
 import com.tonyk.android.rickandmorty.ui.character.CharacterListFragmentDirections
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 class EpisodeListFragment : Fragment() {
     private var _binding: FragmentEpisodesBinding? = null
     private val binding get() = _binding!!
-    private val episodesViewModel : EpisodesViewModel by viewModels()
+    private val episodesViewModel : EpisodesViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,7 +60,7 @@ class EpisodeListFragment : Fragment() {
                 }
             }
         }
-        binding.episodesRcv.layoutManager = LinearLayoutManager(context)
+        binding.episodesRcv.layoutManager = GridLayoutManager(context, 2)
         binding.episodesRcv.adapter = adapter
 
         binding.episodeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

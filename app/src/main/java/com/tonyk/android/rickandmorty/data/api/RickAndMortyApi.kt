@@ -44,8 +44,6 @@ interface RickAndMortyApi {
         @Query("dimension") dimension: String?
     ): LocationsResponse
 
-    @GET("location")
-    suspend fun fetLocationById(@Path("id") id: String): LocationEntity
-
+    @GET("location/{id}")
+    suspend fun fetchLocationById(@Path("id") id: String): LocationEntity
 }
-

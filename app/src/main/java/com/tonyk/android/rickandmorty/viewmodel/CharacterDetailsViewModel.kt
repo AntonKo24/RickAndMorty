@@ -6,13 +6,16 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
+import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.repositoryimpl.EpisodesRepositoryImpl
 import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,36 +26,27 @@ class CharacterDetailsViewModel @Inject constructor(
 ) : ViewModel() {
     private var networkStatus: Boolean = false
 
-
     private val _episodes = MutableStateFlow<PagingData<EpisodeEntity>>(PagingData.empty())
     val episodes: StateFlow<PagingData<EpisodeEntity>> = _episodes.asStateFlow()
+
+    private var episodesIDs: List<String> = emptyList()
     fun getStatus(status: Boolean, ids: List<String>) {
         networkStatus = status
         episodesIDs = ids
         loadEpisodes()
     }
 
-    private var episodesIDs: List<String> = emptyList()
-
-
     private fun loadEpisodes() {
         viewModelScope.launch {
-            if (networkStatus) {
-                episodeRepository.getEpisodesAndSave(episodesIDs)
-
-                episodeRepository.getEpisodesById(episodesIDs)
+                episodeRepository.getEpisodeListById(episodesIDs, networkStatus)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _episodes.value = pagingData
                     }
-            }
-            else {
-                episodeRepository.getEpisodesById(episodesIDs)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _episodes.value = pagingData
-                    }
-            }
         }
+    }
+
+    suspend fun loadLocation(id: String): LocationEntity {
+        return locationsRepository.getLocationById(id, networkStatus)
     }
 }

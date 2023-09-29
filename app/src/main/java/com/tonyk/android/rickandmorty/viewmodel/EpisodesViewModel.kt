@@ -1,6 +1,5 @@
 package com.tonyk.android.rickandmorty.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -32,25 +31,19 @@ class EpisodesViewModel @Inject constructor(
 
     private fun loadEpisodes() {
         viewModelScope.launch {
-            if (networkStatus) {
-                repository.getOnlineEpisodes(currentFilter)
+
+                repository.getEpisodeList(currentFilter, networkStatus)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _episodes.value = pagingData
 
                     }
-            } else {
-                repository.getOfflineEpisodes(currentFilter)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _episodes.value = pagingData
-                    }
-            }
+
         }
     }
 
-    fun applyFilter(filter: String) {
-        currentFilter = EpisodeFilter(name = filter)
+    fun applyFilter(filter: EpisodeFilter) {
+        currentFilter = filter
         loadEpisodes()
     }
 }

@@ -17,24 +17,31 @@ class LocationsRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val locationsDao: LocationsDao
 ) : LocationsRepository {
-    override fun getOfflineLocations(filter: LocationFilter): Flow<PagingData<LocationEntity>> {
+    override suspend fun getLocationsList(
+        filter: LocationFilter,
+        status: Boolean
+    ): Flow<PagingData<LocationEntity>> {
         return Pager(
             config = PagingConfig(pageSize = Constants.PAGE_SIZE, enablePlaceholders = false),
             pagingSourceFactory = {
-                locationsDao.getAllLocations(
-                    name = filter.name,
-                    type = filter.type,
-                    dimension = filter.dimension
-                )
+                if (status) {
+                    LocationsPagingSource(api, locationsDao, filter)
+                } else {
+                    locationsDao.getAllLocations(
+                        name = filter.name,
+                        type = filter.type,
+                        dimension = filter.dimension
+                    )
+                }
+
             }
         ).flow
     }
 
-    override fun getOnlineLocations(filter: LocationFilter): Flow<PagingData<LocationEntity>> {
-        return Pager(
-            config = PagingConfig(pageSize = Constants.PAGE_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = { LocationsPagingSource(api, locationsDao, filter) }
-        ).flow
+    override suspend fun getLocationById(id: String, status: Boolean): LocationEntity {
+        if (status) { val result = api.fetchLocationById(id)
+        locationsDao.insertLocation(result) }
+        return locationsDao.getLocationByID(id)
     }
 
 

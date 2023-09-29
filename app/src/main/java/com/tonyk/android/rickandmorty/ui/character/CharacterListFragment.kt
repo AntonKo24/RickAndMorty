@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class CharacterListFragment : Fragment() {
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
-    private val charactersViewModel: CharactersViewModel by viewModels()
+    private val charactersViewModel: CharactersViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,20 +62,7 @@ class CharacterListFragment : Fragment() {
         binding.charactersRcv.layoutManager = GridLayoutManager(context, 2)
         binding.charactersRcv.adapter = adapter
 
-        binding.characterSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    charactersViewModel.applyFilter(query)
-                }
-                return true
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                }
-                return true
-            }
-        })
 
 
     }
