@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.rickandmorty.databinding.FragmentCharacterDetailsBinding
+import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,7 +56,7 @@ class CharacterDetailsFragment : Fragment() {
 
         binding.charEpisodesList.layoutManager = LinearLayoutManager(context)
 
-        val adapter = EpListCharAdapter(
+        val adapter = EpisodeListAdapter(
             onEpisodeClicked = {
                 findNavController().navigate(
                     CharacterDetailsFragmentDirections.toEpisodeDetailsFragment(
@@ -69,7 +70,7 @@ class CharacterDetailsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 detVM.episodes.collect() { data ->
-                    adapter.submitList(data)
+                    adapter.submitData(data)
                 }
             }
         }

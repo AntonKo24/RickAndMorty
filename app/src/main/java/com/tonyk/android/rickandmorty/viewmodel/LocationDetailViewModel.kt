@@ -37,7 +37,15 @@ class LocationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             if (networkStatus) {
                 repository.findAndSave(charactersIDs)
-                repository.getOfflineCharacters(CharacterFilter(id = charactersIDs))
+
+                repository.getCharacterByID(charactersIDs)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _characters.value = pagingData
+                    }
+            }
+            else {
+                repository.getCharacterByID(charactersIDs)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _characters.value = pagingData

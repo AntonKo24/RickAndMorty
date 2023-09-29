@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
 import com.tonyk.android.rickandmorty.data.database.EpisodesDao
 import com.tonyk.android.rickandmorty.data.repository.EpisodesRepository
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.util.Constants
@@ -36,7 +37,19 @@ class EpisodesRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    suspend fun fetchMultipleEpisodesByID (ids : List<String>) : List<EpisodeEntity> {
-       return api.fetchMultipleEpisodesByID(ids)
+    suspend fun getEpisodesAndSave (ids : List<String>)  {
+      val result = api.fetchMultipleEpisodesByID(ids)
+        episodesDao.insertEpisodes(result)
+    }
+
+    fun getEpisodesById(ids: List<String>): Flow<PagingData<EpisodeEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = Constants.PAGE_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = {
+                episodesDao.getEpisodesByID(
+                    id = ids
+                )
+            }
+        ).flow
     }
 }

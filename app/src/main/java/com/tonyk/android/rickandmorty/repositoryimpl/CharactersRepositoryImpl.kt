@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.repositoryimpl
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -21,13 +22,13 @@ class CharactersRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             pagingSourceFactory = {
-                charactersDao.getAllCharacters(
+
+               charactersDao.getAllCharacters(
                     name = filter.name,
                     status = filter.status,
                     species = filter.species,
                     type = filter.type,
-                    gender = filter.gender,
-                    id = filter.id
+                    gender = filter.gender
                 )
             }
         ).flow
@@ -45,4 +46,14 @@ class CharactersRepositoryImpl @Inject constructor(
         charactersDao.insertCharacters(res)
     }
 
+    fun getCharacterByID(ids: List<String>): Flow<PagingData<CharacterEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = {
+                charactersDao.getCharacterByID(
+                   id = ids
+                )
+            }
+        ).flow
+    }
 }

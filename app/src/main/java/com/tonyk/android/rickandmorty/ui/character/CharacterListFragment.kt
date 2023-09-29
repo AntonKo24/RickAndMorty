@@ -13,6 +13,7 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersBinding
@@ -58,7 +59,7 @@ class CharacterListFragment : Fragment() {
                 }
             }
         }
-        binding.charactersRcv.layoutManager = LinearLayoutManager(context)
+        binding.charactersRcv.layoutManager = GridLayoutManager(context, 2)
         binding.charactersRcv.adapter = adapter
 
         binding.characterSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

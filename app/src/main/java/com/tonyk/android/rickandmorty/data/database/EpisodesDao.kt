@@ -14,6 +14,7 @@ interface EpisodesDao {
 
     @Query(
         "SELECT * FROM episodes WHERE " +
+
                 "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
                 "(:episode IS NULL OR lower(episode) = lower(:episode)) "
     )
@@ -21,4 +22,7 @@ interface EpisodesDao {
         name: String?,
         episode: String?
     ): PagingSource<Int, EpisodeEntity>
+
+    @Query("SELECT * FROM episodes WHERE id IN (:id) ")
+    fun getEpisodesByID(id : List<String>) : PagingSource<Int, EpisodeEntity>
 }

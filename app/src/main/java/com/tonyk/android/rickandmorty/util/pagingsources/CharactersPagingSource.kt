@@ -26,7 +26,8 @@ class CharactersPagingDataSource(
                     status = filter.status,
                     species = filter.species,
                     type = filter.type,
-                    gender = filter.gender
+                    gender = filter.gender,
+
                 )
             charactersDao.insertCharacters(apiResponse.results)
             var nextPageNumber: Int? = null

@@ -2,24 +2,30 @@ package com.tonyk.android.rickandmorty.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
+import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.repositoryimpl.EpisodesRepositoryImpl
+import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CharacterDetailsViewModel @Inject constructor(
-    private val repository: EpisodesRepositoryImpl
+    private val episodeRepository: EpisodesRepositoryImpl,
+    private val locationsRepository: LocationsRepositoryImpl
 ) : ViewModel() {
     private var networkStatus: Boolean = false
 
 
-    private val _episodes: MutableStateFlow<List<EpisodeEntity>> = MutableStateFlow(emptyList())
-    val episodes: StateFlow<List<EpisodeEntity>> = _episodes
-
+    private val _episodes = MutableStateFlow<PagingData<EpisodeEntity>>(PagingData.empty())
+    val episodes: StateFlow<PagingData<EpisodeEntity>> = _episodes.asStateFlow()
     fun getStatus(status: Boolean, ids: List<String>) {
         networkStatus = status
         episodesIDs = ids
@@ -32,11 +38,20 @@ class CharacterDetailsViewModel @Inject constructor(
     private fun loadEpisodes() {
         viewModelScope.launch {
             if (networkStatus) {
-                val episodes = repository.fetchMultipleEpisodesByID(episodesIDs)
-                _episodes.value = episodes
+                episodeRepository.getEpisodesAndSave(episodesIDs)
 
-            } else {
-
+                episodeRepository.getEpisodesById(episodesIDs)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _episodes.value = pagingData
+                    }
+            }
+            else {
+                episodeRepository.getEpisodesById(episodesIDs)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _episodes.value = pagingData
+                    }
             }
         }
     }
