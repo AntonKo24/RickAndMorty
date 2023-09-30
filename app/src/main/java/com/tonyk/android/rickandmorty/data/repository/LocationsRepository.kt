@@ -6,7 +6,7 @@ import com.tonyk.android.rickandmorty.model.location.LocationFilter
 import kotlinx.coroutines.flow.Flow
 
 interface LocationsRepository {
-    suspend fun getLocationsList(
+    suspend fun getListData(
         filter: LocationFilter,
         status: Boolean
     ): Flow<PagingData<LocationEntity>>

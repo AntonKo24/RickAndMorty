@@ -6,7 +6,7 @@ import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import kotlinx.coroutines.flow.Flow
 
 interface CharactersRepository {
-    suspend fun getCharacterList(
+    suspend fun getListData(
         filter: CharacterFilter,
         status: Boolean
     ): Flow<PagingData<CharacterEntity>>

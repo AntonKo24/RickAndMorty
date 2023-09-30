@@ -1,21 +1,18 @@
 package com.tonyk.android.rickandmorty.ui.episode
 
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.GridLayoutManager
-import com.tonyk.android.rickandmorty.databinding.FragmentMainListBinding
+import androidx.paging.PagingDataAdapter
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
+import com.tonyk.android.rickandmorty.ui.BaseListFragment
+import com.tonyk.android.rickandmorty.ui.character.CharacterViewHolder
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.EpisodesViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,76 +20,60 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EpisodeListFragment : Fragment() {
-    private var _binding: FragmentMainListBinding? = null
-    private val binding get() = _binding!!
+class EpisodeListFragment : BaseListFragment<EpisodeEntity, EpisodeViewHolder>() {
+
     private val episodesViewModel: EpisodesViewModel by activityViewModels()
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentMainListBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val status = NetworkChecker.isNetworkAvailable(requireContext())
+    override fun checkStatus(status: Boolean) {
         episodesViewModel.getStatus(status)
         if (status) binding.statusText.text = "ONLINE"
         else binding.statusText.text = "OFFLINE"
+    }
 
-        val adapter = EpisodeListAdapter(
+    override suspend fun observeLoadState(adapter: PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>) {
+        adapter.loadStateFlow.collectLatest { loadStates ->
+            binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+            binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+        }
+    }
+
+    override fun createAdapter(): PagingDataAdapter<EpisodeEntity, EpisodeViewHolder> {
+        return EpisodeListAdapter(
             onEpisodeClicked = { episode ->
-                findNavController().navigate(EpisodeListFragmentDirections.toEpisodeDetail(episode))
+                findNavController().navigate(
+                    EpisodeListFragmentDirections.toEpisodeDetail(
+                        episode
+                    )
+                )
             }
         )
+    }
 
+    override fun collectData(adapter: PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                episodesViewModel.episodes.collectLatest { pagingData ->
+                episodesViewModel.dataFlow.collectLatest { pagingData ->
                     adapter.submitData(pagingData)
 
                 }
             }
         }
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.adapter = adapter
-
-
-        binding.filters.setOnClickListener {
-            findNavController().navigate(EpisodeListFragmentDirections.toEpisodesFilterFragment())
-        }
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
-                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
-            }
-        }
-
-        binding.SwipeRefreshLayout.setOnRefreshListener {
-
-            val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
-            episodesViewModel.refreshPage(statusRefreshed)
-            binding.SwipeRefreshLayout.isRefreshing = false
-
-            Toast.makeText(
-                requireContext(),
-                "${NetworkChecker.isNetworkAvailable(requireContext())}",
-                Toast.LENGTH_LONG
-            ).show()
-            if (statusRefreshed) binding.statusText.text = "ONLINE"
-            else binding.statusText.text = "OFFLINE"
-
-
-        }
-
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun navigateToFilterFragment() {
+        findNavController().navigate(EpisodeListFragmentDirections.toEpisodesFilterFragment())
+    }
+
+    override fun refreshData() {
+        val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
+        episodesViewModel.refreshPage(statusRefreshed)
+        binding.SwipeRefreshLayout.isRefreshing = false
+        Toast.makeText(
+            requireContext(),
+            "${NetworkChecker.isNetworkAvailable(requireContext())}",
+            Toast.LENGTH_LONG
+        ).show()
+        if (statusRefreshed) binding.statusText.text = "ONLINE"
+        else binding.statusText.text = "OFFLINE"
     }
 }

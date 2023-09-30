@@ -13,8 +13,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentMainListBinding
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+import com.tonyk.android.rickandmorty.ui.BaseListFragment
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,29 +25,17 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CharacterListFragment : Fragment() {
-    private var _binding: FragmentMainListBinding? = null
-    private val binding get() = _binding!!
+class CharacterListFragment : BaseListFragment<CharacterEntity, CharacterViewHolder>() {
+
     private val charactersViewModel: CharactersViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentMainListBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val status = NetworkChecker.isNetworkAvailable(requireContext())
+    override fun checkStatus(status: Boolean) {
         charactersViewModel.getStatus(status)
         if (status) binding.statusText.text = "ONLINE"
         else binding.statusText.text = "OFFLINE"
-
-        val adapter = CharactersListAdapter(
+    }
+    override fun createAdapter(): PagingDataAdapter<CharacterEntity, CharacterViewHolder> {
+        return CharactersListAdapter(
             onCharacterClicked = { character ->
                 findNavController().navigate(
                     CharacterListFragmentDirections.toCharacterDetail(
@@ -53,57 +44,39 @@ class CharacterListFragment : Fragment() {
                 )
             }
         )
-        binding.recyclerView.adapter = adapter
+    }
+    override fun collectData(adapter: PagingDataAdapter<CharacterEntity, CharacterViewHolder>) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                charactersViewModel.characters.collectLatest { pagingData ->
+                charactersViewModel.dataFlow.collectLatest { pagingData ->
                     adapter.submitData(pagingData)
 
-                    adapter.addLoadStateListener { loadState ->
-                        val isEmptyList =
-                            loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0
-                        if (isEmptyList) {
-                            binding.emptyStateText.visibility = View.VISIBLE
-                        }
-                    }
                 }
             }
         }
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-
-
-        binding.filters.setOnClickListener {
-            findNavController().navigate(CharacterListFragmentDirections.toCharactersFilterFragment())
-        }
-
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
-                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
-            }
-        }
-
-        binding.SwipeRefreshLayout.setOnRefreshListener {
-
-            val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
-            charactersViewModel.refreshPage(statusRefreshed)
-            binding.SwipeRefreshLayout.isRefreshing = false
-            Toast.makeText(
-                requireContext(),
-                "${NetworkChecker.isNetworkAvailable(requireContext())}",
-                Toast.LENGTH_LONG
-            ).show()
-            if (statusRefreshed) binding.statusText.text = "ONLINE"
-            else binding.statusText.text = "OFFLINE"
-
-        }
-
-
-
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun navigateToFilterFragment() {
+        findNavController().navigate(CharacterListFragmentDirections.toCharactersFilterFragment())
+    }
+
+    override fun refreshData() {
+        val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
+        charactersViewModel.refreshPage(statusRefreshed)
+        binding.SwipeRefreshLayout.isRefreshing = false
+        Toast.makeText(
+            requireContext(),
+            "${NetworkChecker.isNetworkAvailable(requireContext())}",
+            Toast.LENGTH_LONG
+        ).show()
+        if (statusRefreshed) binding.statusText.text = "ONLINE"
+        else binding.statusText.text = "OFFLINE"
+    }
+
+    override suspend fun observeLoadState(adapter: PagingDataAdapter<CharacterEntity, CharacterViewHolder>) {
+        adapter.loadStateFlow.collectLatest { loadStates ->
+            binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+            binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+        }
     }
 }

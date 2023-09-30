@@ -18,7 +18,7 @@ class CharactersRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val charactersDao: CharactersDao
 ) : CharactersRepository {
-    override suspend fun getCharacterList(
+    override suspend fun getListData(
         filter: CharacterFilter,
         status: Boolean
     ): Flow<PagingData<CharacterEntity>> {
