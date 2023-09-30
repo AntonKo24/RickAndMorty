@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,6 +14,8 @@ import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.map
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,6 +44,8 @@ class CharacterListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         charactersViewModel.getStatus(status)
 
@@ -50,17 +55,21 @@ class CharacterListFragment : Fragment() {
                 findNavController().navigate(CharacterListFragmentDirections.toCharacterDetail(character))
             }
         )
-
+        binding.charactersRcv.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 charactersViewModel.characters.collectLatest { pagingData ->
-                    binding.charactersRcv.adapter = adapter
                     adapter.submitData(pagingData)
+
+                    adapter.addLoadStateListener { loadState ->
+                        val isEmptyList = loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0
+                        if (isEmptyList) { binding.emptyStateText.visibility = View.VISIBLE }
+                    }
                 }
             }
         }
         binding.charactersRcv.layoutManager = GridLayoutManager(context, 2)
-        binding.charactersRcv.adapter = adapter
+
 
         binding.filters.setOnClickListener {
             findNavController().navigate(CharacterListFragmentDirections.toCharactersFilterFragment())
@@ -73,4 +82,6 @@ class CharacterListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
