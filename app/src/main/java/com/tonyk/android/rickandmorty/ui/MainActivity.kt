@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.locationDetailsFragment -> false
                 R.id.episodeDetailsFragment -> false
                 R.id.characterDetailsFragment -> false
+                R.id.charactersFilterFragment -> false
+                R.id.episodesFilterFragment -> false
+                R.id.locationsFilterFragment -> false
                 else -> true
             }
             binding.bottomNavigationView.isVisible = isVisibleBottomBar

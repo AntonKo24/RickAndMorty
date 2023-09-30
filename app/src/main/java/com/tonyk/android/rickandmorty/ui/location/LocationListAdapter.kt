@@ -10,25 +10,27 @@ import coil.load
 import com.tonyk.android.rickandmorty.databinding.CharacterListItemBinding
 import com.tonyk.android.rickandmorty.databinding.LocationListItemBinding
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 
 class LocationViewHolder(
     private val binding: LocationListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
-        locationEntity: LocationEntity
+        locationEntity: LocationEntity,
+        onLocationClicked: (location: LocationEntity) -> Unit
     ) {
         binding.apply {
             locationNameTxt.text = locationEntity.name
             locationTypeTxt.text =  locationEntity.type
             locationDimensionTxt.text = locationEntity.dimension
 
+            root.setOnClickListener { onLocationClicked(locationEntity) }
         }
-
     }
 }
 
-class LocationListAdapter : PagingDataAdapter<LocationEntity, LocationViewHolder>(
+class LocationListAdapter(private val onEpisodeClicked: (location: LocationEntity) -> Unit) : PagingDataAdapter<LocationEntity, LocationViewHolder>(
     LocationDiffCallback()
 ) {
 
@@ -43,7 +45,7 @@ class LocationListAdapter : PagingDataAdapter<LocationEntity, LocationViewHolder
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         val locationEntity = getItem(position)
         if (locationEntity != null) {
-            holder.bind(locationEntity)
+            holder.bind(locationEntity, onEpisodeClicked)
         }
     }
 }

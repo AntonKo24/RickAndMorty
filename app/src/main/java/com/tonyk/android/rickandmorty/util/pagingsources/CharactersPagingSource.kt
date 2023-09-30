@@ -26,9 +26,11 @@ class CharactersPagingDataSource(
                     status = filter.status,
                     species = filter.species,
                     type = filter.type,
-                    gender = filter.gender
+                    gender = filter.gender,
+
                 )
             charactersDao.insertCharacters(apiResponse.results)
+
             var nextPageNumber: Int? = null
             if (apiResponse.info.next != null) {
                 val uri = Uri.parse(apiResponse.info.next)

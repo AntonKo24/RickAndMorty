@@ -1,8 +1,5 @@
 package com.tonyk.android.rickandmorty.model.character
 
-import dagger.Provides
-import javax.inject.Inject
-
 
 data class CharacterFilter (
     val name: String? = null,

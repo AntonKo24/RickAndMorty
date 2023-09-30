@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.repositoryimpl
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -17,25 +18,43 @@ class CharactersRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val charactersDao: CharactersDao
 ) : CharactersRepository {
-    override fun getOfflineCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>> {
+    override suspend fun getCharacterList(
+        filter: CharacterFilter,
+        status: Boolean
+    ): Flow<PagingData<CharacterEntity>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             pagingSourceFactory = {
-                charactersDao.getAllCharacters(
-                    name = filter.name,
-                    status = filter.status,
-                    species = filter.species,
-                    type = filter.type,
-                    gender = filter.gender
-                )
+                if (status) {
+                    CharactersPagingDataSource(api, charactersDao, filter)
+                } else {
+                    Log.d("TESTSSS", "Offline Query: name=${filter.name}, status=${filter.status}, species=${filter.species}, type=${filter.type}, gender=${filter.gender}")
+
+                    charactersDao.getCharacters(
+                        name = filter.name,
+                        status = filter.status,
+                        species = filter.species,
+                        type = filter.type,
+                        gender = filter.gender
+                    )
+                }
             }
         ).flow
     }
 
-    override fun getOnlineCharacters(filter: CharacterFilter): Flow<PagingData<CharacterEntity>> {
+    override suspend fun getCharacterListById(
+        ids: List<String>,
+        status: Boolean
+    ): Flow<PagingData<CharacterEntity>> {
+        if (status) {
+            val result = api.fetchMultipleCharactersByID(ids)
+            charactersDao.insertCharacters(result)
+        }
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = { CharactersPagingDataSource(api, charactersDao, filter) }
+            pagingSourceFactory = {
+                charactersDao.getCharactersByID(id = ids)
+            }
         ).flow
     }
 }

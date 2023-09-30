@@ -1,10 +1,14 @@
 package com.tonyk.android.rickandmorty.model.character
 
+import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class CharacterLocation (
-    val name : String,
-    val url : String
-)
+    @ColumnInfo("locationName")val name : String,
+    @ColumnInfo("locationUrl")val url : String
+) : Parcelable

@@ -17,22 +17,41 @@ class EpisodesRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val episodesDao: EpisodesDao
 ) : EpisodesRepository {
-    override fun getOfflineEpisodes(filter: EpisodeFilter): Flow<PagingData<EpisodeEntity>> {
+    override suspend fun getEpisodeList(
+        filter: EpisodeFilter,
+        status: Boolean
+    ): Flow<PagingData<EpisodeEntity>> {
         return Pager(
             config = PagingConfig(pageSize = Constants.PAGE_SIZE, enablePlaceholders = false),
             pagingSourceFactory = {
-                episodesDao.getAllEpisodes(
-                    name = filter.name,
-                    episode = filter.episode
-                )
+                if (status) {
+                    EpisodesPagingSource(api, episodesDao, filter)
+                } else {
+                    episodesDao.getAllEpisodes(
+                        name = filter.name,
+                        episode = filter.episode
+                    )
+                }
+
             }
         ).flow
     }
 
-    override fun getOnlineEpisodes(filter: EpisodeFilter): Flow<PagingData<EpisodeEntity>> {
+    override suspend fun getEpisodeListById(
+        ids: List<String>,
+        status: Boolean
+    ): Flow<PagingData<EpisodeEntity>> {
+        if (status) {
+            val result = api.fetchMultipleEpisodesByID(ids)
+            episodesDao.insertEpisodes(result)
+        }
         return Pager(
             config = PagingConfig(pageSize = Constants.PAGE_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = { EpisodesPagingSource(api, episodesDao, filter) }
+            pagingSourceFactory = {
+                episodesDao.getEpisodesByID(
+                    id = ids
+                )
+            }
         ).flow
     }
 }

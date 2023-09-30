@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.ui.episode
+package com.tonyk.android.rickandmorty.ui.character
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,16 +7,19 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.rickandmorty.databinding.EpisodeListItemBinding
-import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import java.security.interfaces.ECPublicKey
+import androidx.recyclerview.widget.ListAdapter
 
-class EpisodeViewHolder(
+import coil.load
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+
+
+class EpListVH(
     private val binding: EpisodeListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
         episodeEntity: EpisodeEntity,
-        onEpisodeClicked: (episode: EpisodeEntity) -> Unit
+        onEpisodeClicked: (episodeEntity: EpisodeEntity) -> Unit
     ) {
         binding.apply {
             episodeNameTxt.text = episodeEntity.name
@@ -25,31 +28,25 @@ class EpisodeViewHolder(
 
             root.setOnClickListener { onEpisodeClicked(episodeEntity) }
         }
-        Log.d("PAgingTest33333", "EPISODES NOW : ${episodeEntity.name}")
     }
 }
 
-class EpisodeListAdapter(private val onEpisodeClicked: (episode: EpisodeEntity) -> Unit) : PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>(
-    EpisodeDiffCallback()
-) {
-
+class EpListCharAdapter(private val onEpisodeClicked: (episodeEntity: EpisodeEntity) -> Unit) : ListAdapter<EpisodeEntity, EpListVH>(ContactDiffCallback()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): EpisodeViewHolder {
+    ): EpListVH {
         val inflater = LayoutInflater.from(parent.context)
-        return EpisodeViewHolder(EpisodeListItemBinding.inflate(inflater, parent, false))
+        return EpListVH(EpisodeListItemBinding.inflate(inflater, parent, false))
     }
 
-    override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
-        val episodeEntity = getItem(position)
-        if (episodeEntity != null) {
-            holder.bind(episodeEntity, onEpisodeClicked)
-        }
+    override fun onBindViewHolder(holder: EpListVH, position: Int) {
+        val contact = getItem(position)
+        holder.bind(contact, onEpisodeClicked)
     }
 }
 
-class EpisodeDiffCallback : DiffUtil.ItemCallback<EpisodeEntity>() {
+class ContactDiffCallback : DiffUtil.ItemCallback<EpisodeEntity>() {
     override fun areItemsTheSame(oldItem: EpisodeEntity, newItem: EpisodeEntity): Boolean {
         return oldItem.id == newItem.id
     }

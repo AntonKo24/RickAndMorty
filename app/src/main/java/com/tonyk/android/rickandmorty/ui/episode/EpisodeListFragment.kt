@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,8 +14,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesBinding
+import com.tonyk.android.rickandmorty.ui.character.CharacterListFragmentDirections
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
@@ -27,7 +31,7 @@ import kotlinx.coroutines.launch
 class EpisodeListFragment : Fragment() {
     private var _binding: FragmentEpisodesBinding? = null
     private val binding get() = _binding!!
-    private val episodesViewModel : EpisodesViewModel by viewModels()
+    private val episodesViewModel : EpisodesViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,7 +47,12 @@ class EpisodeListFragment : Fragment() {
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         episodesViewModel.getStatus(status)
 
-        val adapter = EpisodeListAdapter()
+        val adapter = EpisodeListAdapter(
+            onEpisodeClicked = {
+                    episode ->
+                findNavController().navigate(EpisodeListFragmentDirections.toEpisodeDetail(episode))
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -53,24 +62,20 @@ class EpisodeListFragment : Fragment() {
                 }
             }
         }
-        binding.episodesRcv.layoutManager = LinearLayoutManager(context)
+        binding.episodesRcv.layoutManager = GridLayoutManager(context, 2)
         binding.episodesRcv.adapter = adapter
 
-        binding.episodeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    episodesViewModel.applyFilter(query)
-                    Log.d("PAgingTest33333", "EPISODES COLLECTIN")
-                }
-                return true
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                }
-                return true
+        binding.filterButton.setOnClickListener {
+            findNavController().navigate(EpisodeListFragmentDirections.toEpisodesFilterFragment())
+        }
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
             }
-        })
+        }
+
     }
 
     override fun onDestroyView() {

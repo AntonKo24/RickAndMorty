@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
-import com.tonyk.android.rickandmorty.model.character.CharacterFilter
+import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,47 +14,31 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @HiltViewModel
-class CharactersViewModel @Inject constructor(
+class EpisodeDetailViewModel @Inject constructor(
     private val repository: CharactersRepositoryImpl
 ) : ViewModel() {
+    private var networkStatus: Boolean = false
+
     private val _characters = MutableStateFlow<PagingData<CharacterEntity>>(PagingData.empty())
     val characters: StateFlow<PagingData<CharacterEntity>> = _characters.asStateFlow()
 
-    private var _currentFilter: CharacterFilter = CharacterFilter()
-    val currentFilter get() = _currentFilter
+    private var charactersIDs = emptyList<String>()
 
-    private var networkStatus: Boolean = false
-
-    fun getStatus(status: Boolean) {
+    fun getStatus(status: Boolean, ids: List<String>) {
         networkStatus = status
-        loadCharacters()
+        charactersIDs = ids
+        loadCharacter()
     }
 
-    private fun loadCharacters() {
+    private fun loadCharacter() {
         viewModelScope.launch {
-            repository.getCharacterList(currentFilter, networkStatus)
+            if (charactersIDs.isNotEmpty())
+            repository.getCharacterListById(charactersIDs, networkStatus)
                 .cachedIn(viewModelScope)
                 .collect { pagingData ->
                     _characters.value = pagingData
                 }
         }
     }
-
-    fun applyFilter(filter: CharacterFilter) {
-        _currentFilter = filter
-        loadCharacters()
-    }
-
 }
-
-
-
-
-
-
-
-
-
-

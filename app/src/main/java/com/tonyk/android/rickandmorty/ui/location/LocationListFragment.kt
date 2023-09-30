@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationsBinding
 import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
@@ -25,7 +29,7 @@ import kotlinx.coroutines.launch
 class LocationListFragment : Fragment() {
     private var _binding: FragmentLocationsBinding? = null
     private val binding get() = _binding!!
-    private val locationsViewModel : LocationsViewModel by viewModels()
+    private val locationsViewModel : LocationsViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,7 +45,11 @@ class LocationListFragment : Fragment() {
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         locationsViewModel.getStatus(status)
 
-        val adapter = LocationListAdapter()
+        val adapter = LocationListAdapter(
+            onEpisodeClicked = {
+                findNavController().navigate(LocationListFragmentDirections.toLocationDetails(it))
+            }
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -50,23 +58,18 @@ class LocationListFragment : Fragment() {
                 }
             }
         }
-        binding.locationsRcv.layoutManager = LinearLayoutManager(context)
+        binding.locationsRcv.layoutManager = GridLayoutManager(context, 2)
         binding.locationsRcv.adapter = adapter
 
-        binding.locationSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    locationsViewModel.applyFilter(query)
-                }
-                return true
+        binding.filter.setOnClickListener {
+            findNavController().navigate(LocationListFragmentDirections.toEocationsFilterFragment())
+        }
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
             }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                }
-                return true
-            }
-        })
+        }
     }
 
     override fun onDestroyView() {

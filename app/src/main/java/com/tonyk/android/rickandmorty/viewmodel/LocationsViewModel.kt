@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
 import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
@@ -21,7 +22,9 @@ class LocationsViewModel @Inject constructor(
     private val _locations = MutableStateFlow<PagingData<LocationEntity>>(PagingData.empty())
     val locations: StateFlow<PagingData<LocationEntity>> = _locations.asStateFlow()
 
-    private var currentFilter: LocationFilter = LocationFilter()
+    private var _currentFilter: LocationFilter = LocationFilter()
+    val currentFilter get() = _currentFilter
+
     private var networkStatus: Boolean = false
 
     fun getStatus(status: Boolean) {
@@ -31,24 +34,18 @@ class LocationsViewModel @Inject constructor(
 
     private fun loadLocations() {
         viewModelScope.launch {
-            if (networkStatus) {
-                repository.getOnlineLocations(currentFilter)
+
+                repository.getLocationsList(currentFilter, networkStatus)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _locations.value = pagingData
                     }
-            } else {
-                repository.getOfflineLocations(currentFilter)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _locations.value = pagingData
-                    }
-            }
+
         }
     }
 
-    fun applyFilter(filter: String) {
-        currentFilter = LocationFilter(name = filter)
+    fun applyFilter(filter: LocationFilter) {
+        _currentFilter = filter
         loadLocations()
     }
 }
