@@ -75,7 +75,12 @@ class CharacterListFragment : Fragment() {
             findNavController().navigate(CharacterListFragmentDirections.toCharactersFilterFragment())
         }
 
-
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+            }
+        }
     }
 
     override fun onDestroyView() {

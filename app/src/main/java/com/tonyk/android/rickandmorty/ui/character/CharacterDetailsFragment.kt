@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.rickandmorty.databinding.FragmentCharacterDetailsBinding
@@ -22,6 +24,7 @@ import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -82,6 +85,13 @@ class CharacterDetailsFragment : Fragment() {
                     characterDetailsViewModel.episodes.collect() { data ->
                         adapter.submitData(data)
                     }
+                }
+            }
+
+            lifecycleScope.launch {
+                adapter.loadStateFlow.collectLatest { loadStates ->
+                    binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                    binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
                 }
             }
         }
