@@ -59,20 +59,9 @@ class LocationListFragment : Fragment() {
         binding.locationsRcv.layoutManager = GridLayoutManager(context, 2)
         binding.locationsRcv.adapter = adapter
 
-        binding.locationSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    locationsViewModel.applyFilter(query)
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                }
-                return true
-            }
-        })
+        binding.filter.setOnClickListener {
+            findNavController().navigate(LocationListFragmentDirections.toEocationsFilterFragment())
+        }
     }
 
     override fun onDestroyView() {

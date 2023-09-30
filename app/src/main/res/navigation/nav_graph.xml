@@ -11,6 +11,9 @@
         <action
             android:id="@+id/toCharacterDetail"
             app:destination="@id/characterDetailsFragment" />
+        <action
+            android:id="@+id/toCharactersFilterFragment"
+            app:destination="@id/charactersFilterFragment" />
     </fragment>
     <fragment
         android:id="@+id/characterDetailsFragment"
@@ -49,6 +52,9 @@
         <action
             android:id="@+id/toLocationDetails"
             app:destination="@id/locationDetailsFragment" />
+        <action
+            android:id="@+id/toEocationsFilterFragment"
+            app:destination="@id/locationsFilterFragment" />
     </fragment>
     <fragment
         android:id="@+id/episodeListFragment"
@@ -57,6 +63,9 @@
         <action
             android:id="@+id/toEpisodeDetail"
             app:destination="@id/episodeDetailsFragment" />
+        <action
+            android:id="@+id/toEpisodesFilterFragment"
+            app:destination="@id/episodesFilterFragment" />
     </fragment>
     <fragment
         android:id="@+id/episodeDetailsFragment"
@@ -69,4 +78,16 @@
             android:name="episode"
             app:argType="com.tonyk.android.rickandmorty.model.episode.EpisodeEntity" />
     </fragment>
+    <fragment
+        android:id="@+id/charactersFilterFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.character.CharactersFilterFragment"
+        android:label="CharactersFilterFragment" />
+    <fragment
+        android:id="@+id/episodesFilterFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.episode.EpisodesFilterFragment"
+        android:label="EpisodesFilterFragment" />
+    <fragment
+        android:id="@+id/locationsFilterFragment"
+        android:name="com.tonyk.android.rickandmorty.ui.location.LocationsFilterFragment"
+        android:label="LocationsFilterFragment" />
 </navigation>

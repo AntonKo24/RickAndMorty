@@ -63,21 +63,11 @@ class EpisodeListFragment : Fragment() {
         binding.episodesRcv.layoutManager = GridLayoutManager(context, 2)
         binding.episodesRcv.adapter = adapter
 
-        binding.episodeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    episodesViewModel.applyFilter(query)
-                    Log.d("PAgingTest33333", "EPISODES COLLECTIN")
-                }
-                return true
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                }
-                return true
-            }
-        })
+        binding.filterButton.setOnClickListener {
+            findNavController().navigate(EpisodeListFragmentDirections.toEpisodesFilterFragment())
+        }
+
     }
 
     override fun onDestroyView() {

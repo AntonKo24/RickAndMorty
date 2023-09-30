@@ -62,7 +62,9 @@ class CharacterListFragment : Fragment() {
         binding.charactersRcv.layoutManager = GridLayoutManager(context, 2)
         binding.charactersRcv.adapter = adapter
 
-
+        binding.filters.setOnClickListener {
+            findNavController().navigate(CharacterListFragmentDirections.toCharactersFilterFragment())
+        }
 
 
     }

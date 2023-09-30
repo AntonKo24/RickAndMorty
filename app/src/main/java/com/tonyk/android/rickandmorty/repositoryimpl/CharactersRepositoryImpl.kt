@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.repositoryimpl
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -27,6 +28,8 @@ class CharactersRepositoryImpl @Inject constructor(
                 if (status) {
                     CharactersPagingDataSource(api, charactersDao, filter)
                 } else {
+                    Log.d("TESTSSS", "Offline Query: name=${filter.name}, status=${filter.status}, species=${filter.species}, type=${filter.type}, gender=${filter.gender}")
+
                     charactersDao.getCharacters(
                         name = filter.name,
                         status = filter.status,

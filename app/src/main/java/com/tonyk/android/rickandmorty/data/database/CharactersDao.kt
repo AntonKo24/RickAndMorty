@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.data.database
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert

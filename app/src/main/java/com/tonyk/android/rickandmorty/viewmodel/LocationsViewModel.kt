@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
 import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
@@ -21,7 +22,9 @@ class LocationsViewModel @Inject constructor(
     private val _locations = MutableStateFlow<PagingData<LocationEntity>>(PagingData.empty())
     val locations: StateFlow<PagingData<LocationEntity>> = _locations.asStateFlow()
 
-    private var currentFilter: LocationFilter = LocationFilter()
+    private var _currentFilter: LocationFilter = LocationFilter()
+    val currentFilter get() = _currentFilter
+
     private var networkStatus: Boolean = false
 
     fun getStatus(status: Boolean) {
@@ -42,7 +45,7 @@ class LocationsViewModel @Inject constructor(
     }
 
     fun applyFilter(filter: LocationFilter) {
-        currentFilter = filter
+        _currentFilter = filter
         loadLocations()
     }
 }

@@ -23,7 +23,9 @@ class CharactersViewModel @Inject constructor(
     private val _characters = MutableStateFlow<PagingData<CharacterEntity>>(PagingData.empty())
     val characters: StateFlow<PagingData<CharacterEntity>> = _characters.asStateFlow()
 
-    private var currentFilter: CharacterFilter = CharacterFilter()
+    private var _currentFilter: CharacterFilter = CharacterFilter()
+    val currentFilter get() = _currentFilter
+
     private var networkStatus: Boolean = false
 
     fun getStatus(status: Boolean) {
@@ -42,7 +44,7 @@ class CharactersViewModel @Inject constructor(
     }
 
     fun applyFilter(filter: CharacterFilter) {
-        currentFilter = filter
+        _currentFilter = filter
         loadCharacters()
     }
 

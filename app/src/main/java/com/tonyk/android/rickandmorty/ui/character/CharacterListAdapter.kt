@@ -26,7 +26,6 @@ class CharacterViewHolder(
 
             root.setOnClickListener { onCharacterClicked(characterEntity) }
         }
-        Log.d("PAgingTest333", "EPISODES NOW : ${characterEntity.location.name}")
     }
 }
 

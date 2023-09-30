@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.repositoryimpl.EpisodesRepositoryImpl
@@ -21,7 +22,9 @@ class EpisodesViewModel @Inject constructor(
     private val _episodes = MutableStateFlow<PagingData<EpisodeEntity>>(PagingData.empty())
     val episodes: StateFlow<PagingData<EpisodeEntity>> = _episodes.asStateFlow()
 
-    private var currentFilter: EpisodeFilter = EpisodeFilter()
+    private var _currentFilter: EpisodeFilter = EpisodeFilter()
+    val currentFilter get() = _currentFilter
+
     private var networkStatus: Boolean = false
 
     fun getStatus(status: Boolean) {
@@ -43,7 +46,7 @@ class EpisodesViewModel @Inject constructor(
     }
 
     fun applyFilter(filter: EpisodeFilter) {
-        currentFilter = filter
+        _currentFilter = filter
         loadEpisodes()
     }
 }
