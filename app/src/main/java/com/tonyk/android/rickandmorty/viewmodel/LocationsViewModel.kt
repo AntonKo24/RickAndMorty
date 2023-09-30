@@ -16,7 +16,7 @@ class LocationsViewModel @Inject constructor(
 
     override fun loadListData() {
         viewModelScope.launch {
-            repository.getListData(_currentFilter, networkStatus)
+            repository.getLocationsList(_currentFilter, networkStatus)
                 .cachedIn(viewModelScope)
                 .collect { pagingData ->
                     _data.value = pagingData

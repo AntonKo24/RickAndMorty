@@ -17,7 +17,7 @@ class LocationsRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val locationsDao: LocationsDao
 ) : LocationsRepository {
-    override suspend fun getListData(
+    override suspend fun getLocationsList(
         filter: LocationFilter,
         status: Boolean
     ): Flow<PagingData<LocationEntity>> {
@@ -39,8 +39,10 @@ class LocationsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLocationById(id: String, status: Boolean): LocationEntity {
-        if (status) { val result = api.fetchLocationById(id)
-        locationsDao.insertLocation(result) }
+        if (status) {
+            val result = api.fetchLocationById(id)
+            locationsDao.insertLocation(result)
+        }
         return locationsDao.getLocationByID(id)
     }
 }

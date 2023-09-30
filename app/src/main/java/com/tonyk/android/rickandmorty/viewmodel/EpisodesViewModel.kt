@@ -16,7 +16,7 @@ class EpisodesViewModel @Inject constructor(
 
     override fun loadListData() {
         viewModelScope.launch {
-            repository.getListData(_currentFilter, networkStatus)
+            repository.getEpisodesList(_currentFilter, networkStatus)
                 .cachedIn(viewModelScope)
                 .collect { pagingData ->
                     _data.value = pagingData

@@ -33,12 +33,13 @@ class EpisodeDetailViewModel @Inject constructor(
 
     private fun loadCharacter() {
         viewModelScope.launch {
-            if (charactersIDs.isNotEmpty())
-            repository.getCharacterListById(charactersIDs, networkStatus)
-                .cachedIn(viewModelScope)
-                .collect { pagingData ->
-                    _characters.value = pagingData
-                }
+            if (charactersIDs.isNotEmpty()) {
+                repository.getCharacterListById(charactersIDs, networkStatus)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _characters.value = pagingData
+                    }
+            }
         }
     }
 }
