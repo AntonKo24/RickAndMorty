@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class LocationEntity (
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: Int,
     val name : String,
     val type : String,
     val dimension : String,

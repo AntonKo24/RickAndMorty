@@ -4,22 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.tonyk.android.rickandmorty.databinding.FragmentLocationsBinding
-import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
+import com.tonyk.android.rickandmorty.databinding.FragmentMainListBinding
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.EpisodesViewModel
 import com.tonyk.android.rickandmorty.viewmodel.LocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -27,15 +23,15 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LocationListFragment : Fragment() {
-    private var _binding: FragmentLocationsBinding? = null
+    private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
-    private val locationsViewModel : LocationsViewModel by activityViewModels()
+    private val locationsViewModel: LocationsViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLocationsBinding.inflate(inflater, container, false)
+        _binding = FragmentMainListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,6 +40,8 @@ class LocationListFragment : Fragment() {
 
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         locationsViewModel.getStatus(status)
+        if (status) binding.statusText.text = "ONLINE"
+        else binding.statusText.text = "OFFLINE"
 
         val adapter = LocationListAdapter(
             onEpisodeClicked = {
@@ -58,10 +56,10 @@ class LocationListFragment : Fragment() {
                 }
             }
         }
-        binding.locationsRcv.layoutManager = GridLayoutManager(context, 2)
-        binding.locationsRcv.adapter = adapter
+        binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerView.adapter = adapter
 
-        binding.filter.setOnClickListener {
+        binding.filters.setOnClickListener {
             findNavController().navigate(LocationListFragmentDirections.toEocationsFilterFragment())
         }
         lifecycleScope.launch {
@@ -69,6 +67,20 @@ class LocationListFragment : Fragment() {
                 binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
                 binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
             }
+        }
+
+        binding.SwipeRefreshLayout.setOnRefreshListener {
+
+            val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
+            locationsViewModel.refreshPage(statusRefreshed)
+            binding.SwipeRefreshLayout.isRefreshing = false
+            Toast.makeText(
+                requireContext(),
+                "${NetworkChecker.isNetworkAvailable(requireContext())}",
+                Toast.LENGTH_LONG
+            ).show()
+            if (statusRefreshed) binding.statusText.text = "ONLINE"
+            else binding.statusText.text = "OFFLINE"
         }
     }
 

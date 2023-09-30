@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class EpisodeEntity (
-    @PrimaryKey val id : String,
+    @PrimaryKey val id : Int,
     val name : String,
     val episode : String,
     val air_date : String,

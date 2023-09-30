@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -9,6 +10,7 @@ import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
 import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,19 +31,27 @@ class LocationsViewModel @Inject constructor(
 
     fun getStatus(status: Boolean) {
         networkStatus = status
-        loadLocations() // Обновляем данные при изменении статуса сети
+        loadLocations()
+    }
+
+    fun refreshPage(status: Boolean) {
+        if (status != networkStatus) {
+            networkStatus = status
+            viewModelScope.coroutineContext.cancelChildren()
+            loadLocations()
+        }
     }
 
     private fun loadLocations() {
+        viewModelScope.coroutineContext.cancelChildren()
         viewModelScope.launch {
-
                 repository.getLocationsList(currentFilter, networkStatus)
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _locations.value = pagingData
                     }
-
         }
+        Log.d("TraceStatus", "$networkStatus")
     }
 
     fun applyFilter(filter: LocationFilter) {

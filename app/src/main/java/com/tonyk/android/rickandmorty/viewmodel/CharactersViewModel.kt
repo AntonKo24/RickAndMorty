@@ -8,6 +8,7 @@ import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,7 +34,16 @@ class CharactersViewModel @Inject constructor(
         loadCharacters()
     }
 
+    fun refreshPage(status: Boolean) {
+        if (status != networkStatus) {
+            networkStatus = status
+            viewModelScope.coroutineContext.cancelChildren()
+            loadCharacters()
+        }
+    }
+
     private fun loadCharacters() {
+        viewModelScope.coroutineContext.cancelChildren()
         viewModelScope.launch {
             repository.getCharacterList(currentFilter, networkStatus)
                 .cachedIn(viewModelScope)
@@ -41,6 +51,7 @@ class CharactersViewModel @Inject constructor(
                     _characters.value = pagingData
                 }
         }
+
     }
 
     fun applyFilter(filter: CharacterFilter) {

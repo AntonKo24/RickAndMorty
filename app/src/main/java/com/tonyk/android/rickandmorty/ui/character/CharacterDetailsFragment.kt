@@ -111,7 +111,7 @@ class CharacterDetailsFragment : Fragment() {
                         val location = withContext(Dispatchers.IO) {
                             characterDetailsViewModel.loadLocation(locationId)
                         }
-                        Log.d("DebugLoc", "$location")
+
                         withContext(Dispatchers.Main) {
                         findNavController().navigate(
                             CharacterDetailsFragmentDirections.toLocationDetails(location)
