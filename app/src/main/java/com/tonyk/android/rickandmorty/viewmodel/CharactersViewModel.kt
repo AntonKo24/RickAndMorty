@@ -21,7 +21,7 @@ class CharactersViewModel @Inject constructor(
             repository.getCharactersList(_currentFilter, networkStatus)
                 .cachedIn(viewModelScope)
                 .collect { pagingData ->
-                    _data.value = pagingData
+                    _dataFlow.value = pagingData
                 }
         }
     }

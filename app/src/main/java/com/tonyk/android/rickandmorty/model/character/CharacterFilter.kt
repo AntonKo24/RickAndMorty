@@ -1,7 +1,6 @@
 package com.tonyk.android.rickandmorty.model.character
 
-
-data class CharacterFilter (
+data class CharacterFilter(
     val name: String? = null,
     val status: String? = null,
     val species: String? = null,

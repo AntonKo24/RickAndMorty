@@ -3,37 +3,34 @@ package com.tonyk.android.rickandmorty.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 abstract class BaseListViewModel<T : Any, FilterType : Any>(
     defaultFilter: FilterType
 ) : ViewModel() {
-    protected val _data = MutableStateFlow<PagingData<T>>(PagingData.empty())
-    val dataFlow: StateFlow<PagingData<T>> = _data.asStateFlow()
+    protected val _dataFlow = MutableStateFlow<PagingData<T>>(PagingData.empty())
+    val dataFlow: StateFlow<PagingData<T>> = _dataFlow.asStateFlow()
 
     protected var _currentFilter: FilterType = defaultFilter
 
-    protected var networkStatus: Boolean = false
-
+    private var _networkStatus: Boolean = false
+    val networkStatus get() = _networkStatus
 
     fun getCurrentFilter(): FilterType {
         return _currentFilter
     }
 
     fun getStatus(status: Boolean) {
-        networkStatus = status
+        _networkStatus = status
         loadListData()
     }
 
     fun refreshPage(status: Boolean) {
         if (status != networkStatus) {
-            networkStatus = status
+            _networkStatus = status
             viewModelScope.coroutineContext.cancelChildren()
             loadListData()
         }
@@ -45,5 +42,7 @@ abstract class BaseListViewModel<T : Any, FilterType : Any>(
         _currentFilter = filter
         loadListData()
     }
+
+
 }
 

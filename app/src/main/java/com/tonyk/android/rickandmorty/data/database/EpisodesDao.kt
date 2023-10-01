@@ -2,12 +2,10 @@ package com.tonyk.android.rickandmorty.data.database
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import retrofit2.http.DELETE
 
 @Dao
 interface EpisodesDao {
@@ -25,8 +23,6 @@ interface EpisodesDao {
     ): PagingSource<Int, EpisodeEntity>
 
     @Query("SELECT * FROM episodes WHERE id IN (:id) ")
-    fun getEpisodesByID(id : List<String>) : PagingSource<Int, EpisodeEntity>
-
-
+    fun getEpisodesByID(id: List<String>): PagingSource<Int, EpisodeEntity>
 
 }

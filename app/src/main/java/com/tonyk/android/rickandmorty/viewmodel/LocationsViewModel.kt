@@ -19,7 +19,7 @@ class LocationsViewModel @Inject constructor(
             repository.getLocationsList(_currentFilter, networkStatus)
                 .cachedIn(viewModelScope)
                 .collect { pagingData ->
-                    _data.value = pagingData
+                    _dataFlow.value = pagingData
                 }
         }
     }

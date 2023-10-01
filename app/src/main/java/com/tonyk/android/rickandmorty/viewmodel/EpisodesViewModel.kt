@@ -19,7 +19,7 @@ class EpisodesViewModel @Inject constructor(
             repository.getEpisodesList(_currentFilter, networkStatus)
                 .cachedIn(viewModelScope)
                 .collect { pagingData ->
-                    _data.value = pagingData
+                    _dataFlow.value = pagingData
                 }
         }
     }

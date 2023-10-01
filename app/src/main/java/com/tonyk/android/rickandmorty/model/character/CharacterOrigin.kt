@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
 @Parcelize
-data class CharacterOrigin (
-    @ColumnInfo("originName") val name : String,
-    @ColumnInfo("originUrl") val url : String
+data class CharacterOrigin(
+    @ColumnInfo("originName") val name: String,
+    @ColumnInfo("originUrl") val url: String
 ) : Parcelable

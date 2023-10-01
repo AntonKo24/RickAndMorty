@@ -24,7 +24,6 @@ class LocationListFragment : BaseListFragment<LocationEntity, LocationViewHolder
             }
         )
     }
-
     override fun navigateToFilterFragment() {
         findNavController().navigate(LocationListFragmentDirections.toEocationsFilterFragment())
     }

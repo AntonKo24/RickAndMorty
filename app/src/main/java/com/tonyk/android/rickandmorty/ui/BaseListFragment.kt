@@ -23,7 +23,7 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
 
-    abstract val viewModel: BaseListViewModel<T, *>
+    protected abstract val viewModel: BaseListViewModel<T, *>
 
     override fun onCreateView(
         inflater: LayoutInflater,
