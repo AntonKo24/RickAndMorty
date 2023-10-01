@@ -8,13 +8,16 @@ import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.util.conventers.ListStringConverter
 
-
-@Database(entities = [CharacterEntity::class, LocationEntity::class, EpisodeEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [CharacterEntity::class, LocationEntity::class, EpisodeEntity::class],
+    version = 1,
+    exportSchema = false
+)
 @TypeConverters(
     ListStringConverter::class
 )
 abstract class LocationsDatabase : RoomDatabase() {
-    abstract fun charactersDao() : CharactersDao
+    abstract fun charactersDao(): CharactersDao
     abstract fun locationsDao(): LocationsDao
-    abstract fun episodesDao() : EpisodesDao
+    abstract fun episodesDao(): EpisodesDao
 }

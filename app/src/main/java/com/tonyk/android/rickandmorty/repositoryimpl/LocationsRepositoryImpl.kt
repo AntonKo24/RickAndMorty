@@ -39,10 +39,10 @@ class LocationsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLocationById(id: String, status: Boolean): LocationEntity {
-        if (status) { val result = api.fetchLocationById(id)
-        locationsDao.insertLocation(result) }
+        if (status) {
+            val result = api.fetchLocationById(id)
+            locationsDao.insertLocation(result)
+        }
         return locationsDao.getLocationByID(id)
     }
-
-
 }

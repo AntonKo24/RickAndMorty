@@ -31,7 +31,7 @@ class CharactersFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentFilter = charactersViewModel.currentFilter
+        val currentFilter = charactersViewModel.getCurrentFilter()
 
         binding.clearBtn.setOnClickListener {
 

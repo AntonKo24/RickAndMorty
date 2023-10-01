@@ -6,14 +6,13 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
-
 @Entity(tableName = "episodes")
 @JsonClass(generateAdapter = true)
 @Parcelize
-data class EpisodeEntity (
-    @PrimaryKey val id : String,
-    val name : String,
-    val episode : String,
-    val air_date : String,
-    val characters : List<String>
+data class EpisodeEntity(
+    @PrimaryKey val id: Int,
+    val name: String,
+    val episode: String,
+    val air_date: String,
+    val characters: List<String>
 ) : Parcelable

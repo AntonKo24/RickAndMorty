@@ -6,7 +6,7 @@ import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import kotlinx.coroutines.flow.Flow
 
 interface EpisodesRepository {
-    suspend fun getEpisodeList(
+    suspend fun getEpisodesList(
         filter: EpisodeFilter,
         status: Boolean
     ): Flow<PagingData<EpisodeEntity>>

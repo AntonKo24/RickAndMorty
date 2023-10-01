@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodeDetailsBinding
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.EpisodeDetailViewModel
+import com.tonyk.android.rickandmorty.viewmodel.DetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class EpisodeDetailsFragment : Fragment() {
     private var _binding: FragmentEpisodeDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: EpisodeDetailsFragmentArgs by navArgs()
-    private val episodeDetailViewModel : EpisodeDetailViewModel by viewModels()
+    private val detailsViewModel : DetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,13 +48,15 @@ class EpisodeDetailsFragment : Fragment() {
             val lastDigit = parts.last()
             ld.add(lastDigit)
         }
+        if (ld.isEmpty()) binding.progressBar.isVisible = false
+        else detailsViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
 
         binding.airDateEpisode.text = args.episode.air_date
         binding.episodeNameText.text = args.episode.name
         binding.episodeNumberText.text = args.episode.episode
 
 
-        episodeDetailViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
+
 
         binding.episodeCharList.layoutManager = GridLayoutManager(context, 2)
 
@@ -68,7 +70,7 @@ class EpisodeDetailsFragment : Fragment() {
         binding.episodeCharList.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                episodeDetailViewModel.characters.collect() { data ->
+                detailsViewModel.dataFlow.collect() { data ->
                     adapter.submitData(data)
                 }
             }

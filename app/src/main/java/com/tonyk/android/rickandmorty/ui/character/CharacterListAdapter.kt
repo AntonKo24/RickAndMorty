@@ -1,6 +1,5 @@
 package com.tonyk.android.rickandmorty.ui.character
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -29,9 +28,10 @@ class CharacterViewHolder(
     }
 }
 
-class CharactersListAdapter (private val onCharacterClicked: (character: CharacterEntity) -> Unit) : PagingDataAdapter<CharacterEntity, CharacterViewHolder>(
-    CharacterDiffCallback()
-) {
+class CharactersListAdapter(private val onCharacterClicked: (character: CharacterEntity) -> Unit) :
+    PagingDataAdapter<CharacterEntity, CharacterViewHolder>(
+        CharacterDiffCallback()
+    ) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

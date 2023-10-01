@@ -19,11 +19,13 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.rickandmorty.databinding.FragmentCharacterDetailsBinding
+import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,19 +55,53 @@ class CharacterDetailsFragment : Fragment() {
             val id = url.substringAfterLast("/")
             ld.add(id)
         }
+        if (ld.isEmpty()) binding.progressBar.isVisible = false
+        else characterDetailsViewModel.getStatus(
+            NetworkChecker.isNetworkAvailable(requireContext()),
+            ld
+        )
+
+        val locationId = args.character.location.url.substringAfterLast("/")
+        val originID = args.character.origin.url.substringAfterLast("/")
+
+        characterDetailsViewModel.loadLocation(locationId)
+        characterDetailsViewModel.loadOrigin(originID)
+
+        val res = characterDetailsViewModel.loadTest(locationId)
+        Log.d("ASDASdAsd", "${characterDetailsViewModel.test}")
+
+
         binding.apply {
             charDetailsName.text = args.character.name
             characterPhoto.load(args.character.image)
             charLocationName.text = args.character.location.name
             originLocationName.text = args.character.origin.name
 
-            setOnClickListenerForLocation(charLocationName, args.character.location.url)
-            setOnClickListenerForLocation(originLocationName, args.character.origin.url)
 
-            characterDetailsViewModel.getStatus(
-                NetworkChecker.isNetworkAvailable(requireContext()),
-                ld
-            )
+            characterPhoto.setOnClickListener {
+
+            }
+
+
+                    charLocationName.setOnClickListener {
+                        val result = characterDetailsViewModel.location
+                        if (result != null) {
+                        findNavController().navigate(CharacterDetailsFragmentDirections.toLocationDetails(result))
+                        }
+                    }
+
+
+
+
+                originLocationName.setOnClickListener {
+                    val result = characterDetailsViewModel.origin
+                    if (result != null) {
+                    findNavController().navigate(CharacterDetailsFragmentDirections.toLocationDetails(result ))
+                    }
+                }
+
+
+
 
             charEpisodesList.layoutManager = LinearLayoutManager(context)
 
@@ -82,7 +118,7 @@ class CharacterDetailsFragment : Fragment() {
             charEpisodesList.adapter = adapter
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    characterDetailsViewModel.episodes.collect() { data ->
+                    characterDetailsViewModel.dataFlow.collect() { data ->
                         adapter.submitData(data)
                     }
                 }
@@ -102,26 +138,4 @@ class CharacterDetailsFragment : Fragment() {
         _binding = null
     }
 
-    private fun setOnClickListenerForLocation(textView: TextView, locationUrl: String) {
-        if (locationUrl.isNotEmpty()) {
-            val locationId = locationUrl.substringAfterLast("/")
-            textView.setOnClickListener {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    try {
-                        val location = withContext(Dispatchers.IO) {
-                            characterDetailsViewModel.loadLocation(locationId)
-                        }
-                        Log.d("DebugLoc", "$location")
-                        withContext(Dispatchers.Main) {
-                        findNavController().navigate(
-                            CharacterDetailsFragmentDirections.toLocationDetails(location)
-                        )
-                        }
-                    } catch (e: Exception) {
-                        Toast.makeText(requireContext(), "$e", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
-    }
 }

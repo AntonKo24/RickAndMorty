@@ -23,5 +23,6 @@ interface EpisodesDao {
     ): PagingSource<Int, EpisodeEntity>
 
     @Query("SELECT * FROM episodes WHERE id IN (:id) ")
-    fun getEpisodesByID(id : List<String>) : PagingSource<Int, EpisodeEntity>
+    fun getEpisodesByID(id: List<String>): PagingSource<Int, EpisodeEntity>
+
 }

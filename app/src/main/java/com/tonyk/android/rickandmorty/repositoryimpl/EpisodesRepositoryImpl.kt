@@ -17,7 +17,7 @@ class EpisodesRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val episodesDao: EpisodesDao
 ) : EpisodesRepository {
-    override suspend fun getEpisodeList(
+    override suspend fun getEpisodesList(
         filter: EpisodeFilter,
         status: Boolean
     ): Flow<PagingData<EpisodeEntity>> {

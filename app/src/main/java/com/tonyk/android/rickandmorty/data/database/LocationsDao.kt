@@ -11,20 +11,21 @@ import com.tonyk.android.rickandmorty.model.location.LocationEntity
 interface LocationsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocations(characters: List<LocationEntity>)
-    @Query("SELECT * FROM locations WHERE " +
-            "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
-            "(:type IS NULL OR lower(type) = lower(:type)) AND " +
-            "(:dimension IS NULL OR lower(dimension) = lower(:dimension))")
+
+    @Query(
+        "SELECT * FROM locations WHERE " +
+                "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
+                "(:type IS NULL OR lower(type) = lower(:type)) AND " +
+                "(:dimension IS NULL OR lower(dimension) = lower(:dimension))"
+    )
     fun getAllLocations(
         name: String?,
         type: String?,
-        dimension : String?
+        dimension: String?
     ): PagingSource<Int, LocationEntity>
 
-
-
     @Query("SELECT * FROM locations WHERE id = (:id) ")
-    suspend fun getLocationByID(id : String) : LocationEntity
+    suspend fun getLocationByID(id: String): LocationEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(locationEntity: LocationEntity)

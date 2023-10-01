@@ -33,7 +33,7 @@ class LocationsFilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val currentFilter = locationsViewModel.currentFilter
+        val currentFilter = locationsViewModel.getCurrentFilter()
 
 
         binding.locationNamePicker.setText(currentFilter.name)

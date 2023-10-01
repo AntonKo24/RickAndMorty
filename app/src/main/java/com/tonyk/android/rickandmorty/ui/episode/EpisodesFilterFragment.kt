@@ -30,7 +30,7 @@ class EpisodesFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentFilter = episodesViewModel.currentFilter
+        val currentFilter = episodesViewModel.getCurrentFilter()
 
         binding.episodeNamePicker.setText(currentFilter.name)
         binding.episodeNumberPicker.setText(currentFilter.episode)
