@@ -7,6 +7,8 @@ import com.tonyk.android.rickandmorty.data.repository.LocationsRepository
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,11 +18,27 @@ class CharacterDetailsViewModel @Inject constructor(
     private val locationRepository: LocationsRepository
 ) : BaseDetailViewModel<EpisodeEntity>() {
 
-    var location: LocationEntity? = null
+    private var _location: MutableStateFlow<LocationEntity> = MutableStateFlow(
+        LocationEntity(
+            id = -1,
+            name = "Unknown",
+            type = "Unknown",
+            dimension = "Unknown",
+            emptyList()
+        )
+    )
+    val location: StateFlow<LocationEntity> get() = _location
 
-    var origin: LocationEntity? = null
-
-    var test: LocationEntity? = null
+    private var _origin: MutableStateFlow<LocationEntity> = MutableStateFlow(
+        LocationEntity(
+            id = -1,
+            name = "Unknown",
+            type = "Unknown",
+            dimension = "Unknown",
+            emptyList()
+        )
+    )
+    val origin: StateFlow<LocationEntity> get() = _origin
 
     override fun loadData() {
         if (ids.isNotEmpty())
@@ -33,31 +51,30 @@ class CharacterDetailsViewModel @Inject constructor(
             }
     }
 
-    fun loadLocation(id: String) {
-        if (id.isNotEmpty()) {
+    fun loadLocation(id: String?) {
+        if (id != null) {
             viewModelScope.launch {
-                val result = locationRepository.getLocationById(id, networkStatus)
-                location = result
+                try {
+                    val result = locationRepository.getLocationById(id, networkStatus)
+                    if (result != null) _location.value = result
+                } catch (e: Exception) {
+
+                }
             }
         }
     }
 
-    fun loadOrigin(id: String) {
-        if (id.isNotEmpty()) {
+    fun loadOrigin(id: String?) {
+        if (id != null) {
             viewModelScope.launch {
-                val result = locationRepository.getLocationById(id, networkStatus)
-                origin = result
+                try {
+                    val result = locationRepository.getLocationById(id, networkStatus)
+                    if (result != null) _origin.value = result
+                } catch (e: Exception) {
+
+                }
             }
         }
     }
-
-    fun loadTest(id: String) {
-        if (id.isNotEmpty())
-            viewModelScope.launch {
-                val result = locationRepository.getLocationById(id, networkStatus)
-                test = result
-            }
-    }
-
 }
 

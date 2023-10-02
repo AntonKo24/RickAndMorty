@@ -35,11 +35,6 @@ class EpisodeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEpisodeDetailsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         val urls = args.episode.characters
         val ld = mutableListOf<String>()
@@ -50,6 +45,14 @@ class EpisodeDetailsFragment : Fragment() {
         }
         if (ld.isEmpty()) binding.progressBar.isVisible = false
         else detailsViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
 
         binding.airDateEpisode.text = args.episode.air_date
         binding.episodeNameText.text = args.episode.name

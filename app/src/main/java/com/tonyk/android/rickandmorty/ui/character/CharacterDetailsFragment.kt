@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,13 +18,11 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.rickandmorty.databinding.FragmentCharacterDetailsBinding
-import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,12 +40,6 @@ class CharacterDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCharacterDetailsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
 
         val ld = mutableListOf<String>()
         for (url in args.character.episode) {
@@ -61,49 +52,76 @@ class CharacterDetailsFragment : Fragment() {
             ld
         )
 
-        val locationId = args.character.location.url.substringAfterLast("/")
-        val originID = args.character.origin.url.substringAfterLast("/")
+        if (args.character.location.url.isNotEmpty()) {
+            val locationId = args.character.location.url.substringAfterLast("/")
+            characterDetailsViewModel.loadLocation(locationId)
+        }
 
-        characterDetailsViewModel.loadLocation(locationId)
-        characterDetailsViewModel.loadOrigin(originID)
+        if (args.character.origin.url.isNotEmpty()) {
+            val originID = args.character.origin.url.substringAfterLast("/")
+            characterDetailsViewModel.loadOrigin(originID)
+        }
 
-        val res = characterDetailsViewModel.loadTest(locationId)
-        Log.d("ASDASdAsd", "${characterDetailsViewModel.test}")
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            characterDetailsViewModel.location.collect { location ->
+                Log.d("asdasdasd2", "$location")
+                withContext(Dispatchers.Main) {
+                    binding.charLocationName.setOnClickListener {
+                        if (location.id != -1) {
+                            findNavController().navigate(
+                                CharacterDetailsFragmentDirections.toLocationDetails(
+                                    location
+                                )
+                            )
+                        } else Toast.makeText(
+                            requireContext(),
+                            "Can't load Data about Location",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            characterDetailsViewModel.origin.collect { origin ->
+                Log.d("asdasdasd2", "$origin")
+                withContext(Dispatchers.Main) {
+                    binding.originLocationName.setOnClickListener {
+                        if (origin.id != -1) {
+
+                            Log.d("asdasdasd2sss", "${origin.residents}")
+                            findNavController().navigate(
+                                CharacterDetailsFragmentDirections.toLocationDetails(
+                                    origin
+                                )
+                            )
+                        } else Toast.makeText(
+                            requireContext(),
+                            "Can't load Data about Location",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
 
 
         binding.apply {
             charDetailsName.text = args.character.name
             characterPhoto.load(args.character.image)
-            charLocationName.text = args.character.location.name
-            originLocationName.text = args.character.origin.name
+            binding.originLocationName.text = args.character.origin.name
+            binding.charLocationName.text = args.character.location.name
 
-
-            characterPhoto.setOnClickListener {
-
-            }
-
-
-                    charLocationName.setOnClickListener {
-                        val result = characterDetailsViewModel.location
-                        if (result != null) {
-                        findNavController().navigate(CharacterDetailsFragmentDirections.toLocationDetails(result))
-                        }
-                    }
-
-
-
-
-                originLocationName.setOnClickListener {
-                    val result = characterDetailsViewModel.origin
-                    if (result != null) {
-                    findNavController().navigate(CharacterDetailsFragmentDirections.toLocationDetails(result ))
-                    }
-                }
-
-
-
-
-            charEpisodesList.layoutManager = LinearLayoutManager(context)
 
             val adapter = EpisodeListAdapter(
                 onEpisodeClicked = {
@@ -114,7 +132,7 @@ class CharacterDetailsFragment : Fragment() {
                     )
                 }
             )
-
+            charEpisodesList.layoutManager = LinearLayoutManager(context)
             charEpisodesList.adapter = adapter
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

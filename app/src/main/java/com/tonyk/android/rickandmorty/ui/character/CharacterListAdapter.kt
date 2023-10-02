@@ -6,6 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.CharacterListItemBinding
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 
@@ -21,7 +22,10 @@ class CharacterViewHolder(
             characterName.text = characterEntity.name
             characterSpecies.text = characterEntity.species
             characterStatus.text = characterEntity.status
-            characterImage.load(characterEntity.image)
+            characterImage.load(characterEntity.image) {
+                crossfade(true)
+                error(R.drawable.error_pic)
+            }
 
             root.setOnClickListener { onCharacterClicked(characterEntity) }
         }
