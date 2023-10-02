@@ -24,8 +24,8 @@ interface LocationsDao {
         dimension: String?
     ): PagingSource<Int, LocationEntity>
 
-    @Query("SELECT * FROM locations WHERE id = (:id) ")
-    suspend fun getLocationByID(id: String): LocationEntity
+    @Query("SELECT * FROM locations WHERE id IN (:id) ")
+    suspend fun getLocationByID(id: String): LocationEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(locationEntity: LocationEntity)

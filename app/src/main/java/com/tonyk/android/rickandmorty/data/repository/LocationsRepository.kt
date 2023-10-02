@@ -14,6 +14,6 @@ interface LocationsRepository {
     suspend fun getLocationById(
         id: String,
         status: Boolean
-    ): LocationEntity
+    ): LocationEntity?
 
 }

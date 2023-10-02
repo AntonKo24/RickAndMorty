@@ -1,6 +1,7 @@
 package com.tonyk.android.rickandmorty.ui.location
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,21 +35,29 @@ class LocationDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLocationDetailsBinding.inflate(inflater, container, false)
+
+
+
+
+        val urls = args.location.residents
+        Log.d("asdasdasd2sss", "${urls.size}")
+        val ld = mutableListOf<String>()
+        for (url in urls) {
+            val parts = url.split('/')
+            val lastDigit = parts.last()
+            if (lastDigit!="") ld.add(lastDigit)
+        }
+        if (ld.size < 1) binding.progressBar.isVisible = false
+        else {
+            Log.d("asdasdasd2sss", "${ld.size}")
+            locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld) }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val urls = args.location.residents
-        val ld = mutableListOf<String>()
-        for (url in urls) {
-            val parts = url.split('/')
-            val lastDigit = parts.last()
-            ld.add(lastDigit)
-        }
-        if (ld.isEmpty()) binding.progressBar.isVisible = false
-        else locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
+
 
         binding.locationName.text = args.location.name
         binding.locationtypeTxt.text = args.location.type

@@ -14,6 +14,7 @@ class EpisodesViewModel @Inject constructor(
     private val repository: EpisodesRepositoryImpl
 ) : BaseListViewModel<EpisodeEntity, EpisodeFilter>(EpisodeFilter()) {
 
+
     override fun loadListData() {
         viewModelScope.launch {
             repository.getEpisodesList(_currentFilter, networkStatus)

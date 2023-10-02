@@ -19,21 +19,32 @@ abstract class BaseListViewModel<T : Any, FilterType : Any>(
     private var _networkStatus: Boolean = false
     val networkStatus get() = _networkStatus
 
+    private var alreadyLoaded = false
+
     fun getCurrentFilter(): FilterType {
         return _currentFilter
     }
 
-    fun getStatus(status: Boolean) {
-        _networkStatus = status
-        loadListData()
+
+    fun initializeData(status: Boolean) {
+        if (status != _networkStatus) {
+            _networkStatus = status
+            _dataFlow.value = PagingData.empty()
+            viewModelScope.coroutineContext.cancelChildren()
+            loadListData()
+            alreadyLoaded = true
+        }
+        else if (!alreadyLoaded) {
+            loadListData()
+            alreadyLoaded = true
+        }
     }
 
     fun refreshPage(status: Boolean) {
-        if (status != networkStatus) {
-            _networkStatus = status
-            viewModelScope.coroutineContext.cancelChildren()
-            loadListData()
-        }
+        _networkStatus = status
+        _dataFlow.value = PagingData.empty()
+        viewModelScope.coroutineContext.cancelChildren()
+        loadListData()
     }
 
     abstract fun loadListData()

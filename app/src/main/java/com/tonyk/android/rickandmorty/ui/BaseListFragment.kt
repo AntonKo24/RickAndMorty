@@ -76,7 +76,7 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
     }
 
     private fun updateStatusAndText(status: Boolean) {
-        viewModel.getStatus(status)
+        viewModel.initializeData(status)
         binding.statusText.text = if (status) "ONLINE" else "OFFLINE"
     }
 

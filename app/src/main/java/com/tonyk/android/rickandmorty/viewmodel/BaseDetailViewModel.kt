@@ -1,7 +1,9 @@
 package com.tonyk.android.rickandmorty.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +13,7 @@ abstract class BaseDetailViewModel<T : Any>(
 ) : ViewModel() {
     private var _networkStatus: Boolean = false
     val networkStatus get() = _networkStatus
+    private var alreadyLoaded = false
 
     protected val _dataFlow = MutableStateFlow<PagingData<T>>(PagingData.empty())
     val dataFlow: StateFlow<PagingData<T>> = _dataFlow.asStateFlow()
@@ -19,9 +22,18 @@ abstract class BaseDetailViewModel<T : Any>(
     val ids: List<String> get() = _ids
 
     fun getStatus(status: Boolean, idsInput: List<String>) {
-        _networkStatus = status
         _ids = idsInput
-        loadData()
+        if (status != networkStatus) {
+            _networkStatus = status
+            _dataFlow.value = PagingData.empty()
+            viewModelScope.coroutineContext.cancelChildren()
+            loadData()
+            alreadyLoaded = true
+        }
+        else if (!alreadyLoaded) {
+            loadData()
+            alreadyLoaded = true
+        }
     }
 
     abstract fun loadData()
