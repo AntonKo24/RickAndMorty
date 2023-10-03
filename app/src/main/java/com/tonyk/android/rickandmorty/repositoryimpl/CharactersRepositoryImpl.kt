@@ -25,7 +25,9 @@ class CharactersRepositoryImpl @Inject constructor(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             pagingSourceFactory = {
                 if (status) {
+
                     CharactersPagingDataSource(api, charactersDao, filter)
+
                 } else {
                     charactersDao.getCharacters(
                         name = filter.name,

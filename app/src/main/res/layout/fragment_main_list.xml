@@ -9,15 +9,19 @@
     android:layout_height="match_parent">
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/back_1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,25 +49,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/filters"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@android:color/system_accent1_100"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_filter" />
-
         <TextView
             android:id="@+id/statusText"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:color/system_accent1_100"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-light"
+            android:padding="15dp"
             android:text="Status"
+            android:textAlignment="center"
+            android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/filters"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_status"
             app:layout_constraintEnd_toStartOf="@+id/filters"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ic_status"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ic_status"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_online" />
+
+        <ImageView
+            android:id="@+id/filters"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_filter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

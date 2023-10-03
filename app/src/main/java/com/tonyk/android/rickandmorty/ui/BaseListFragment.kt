@@ -13,6 +13,8 @@ import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentMainListBinding
 import com.tonyk.android.rickandmorty.util.NetworkChecker
 import com.tonyk.android.rickandmorty.viewmodel.BaseListViewModel
@@ -39,6 +41,7 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
 
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         updateStatusAndText(status)
+
 
         val adapter = createAdapter()
         observeData(adapter)
@@ -77,7 +80,15 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
 
     private fun updateStatusAndText(status: Boolean) {
         viewModel.initializeData(status)
-        binding.statusText.text = if (status) "ONLINE" else "OFFLINE"
+        if (status) {
+            binding.statusText.text =  "ONLINE"
+            binding.icStatus.load(R.drawable.ic_online)
+        }
+         else {
+            binding.icStatus.load(R.drawable.ic_offline)
+            binding.statusText.text =  "OFFLINE"
+        }
+
     }
 
     private fun refreshData() {
@@ -85,7 +96,14 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         viewModel.refreshPage(statusRefreshed)
         binding.apply {
             SwipeRefreshLayout.isRefreshing = false
-            statusText.text = if (statusRefreshed) "ONLINE" else "OFFLINE"
+            if (statusRefreshed) {
+                binding.statusText.text =  "ONLINE"
+                binding.icStatus.load(R.drawable.ic_online)
+            }
+            else {
+                binding.icStatus.load(R.drawable.ic_offline)
+                binding.statusText.text =  "OFFLINE"
+            }
         }
     }
 
@@ -105,6 +123,9 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
                 binding.apply {
                     progressBar.isVisible = loadStates.refresh is LoadState.Loading
                     emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                    if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
+                        emptyStateText.isVisible = adapter.itemCount < 1
+                    }
                 }
             }
         }

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/back_2">
 
     <EditText
         android:id="@+id/locationNamePicker"
@@ -54,6 +55,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
+        android:background="@color/back_main"
         android:text="apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,14 +63,15 @@
 
     <ImageView
         android:id="@+id/backBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="?attr/popupMenuBackground"
+        android:background="@drawable/back_btn_background"
+        android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back" />
+        app:srcCompat="@drawable/ic_back"  />
 
     <TextView
         android:id="@+id/clearBtn"
@@ -76,7 +79,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="?attr/popupMenuBackground"
+        android:background="@color/back_main"
         android:padding="8dp"
         android:text="CLEAR"
         app:layout_constraintEnd_toEndOf="parent"

@@ -80,8 +80,13 @@ class EpisodeDetailsFragment : Fragment() {
         }
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
-                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                binding.apply {
+                    progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                    emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                    if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
+                        emptyStateText.isVisible = adapter.itemCount < 1
+                    }
+                }
             }
         }
     }

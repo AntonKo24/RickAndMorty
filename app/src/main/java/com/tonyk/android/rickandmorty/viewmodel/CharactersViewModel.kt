@@ -1,5 +1,6 @@
 package com.tonyk.android.rickandmorty.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
@@ -18,11 +19,17 @@ class CharactersViewModel @Inject constructor(
 
     override fun loadListData() {
         viewModelScope.launch {
-            repository.getCharactersList(_currentFilter, networkStatus)
-                .cachedIn(viewModelScope)
-                .collect { pagingData ->
-                    _dataFlow.value = pagingData
-                }
+            try {
+                repository.getCharactersList(_currentFilter, networkStatus)
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        _dataFlow.value = pagingData
+                    }
+                Log.d("debugio", "ЛОАД")
+            }
+            catch (e: Exception) {
+                Log.d("debugio", "$e")
+            }
         }
     }
 }

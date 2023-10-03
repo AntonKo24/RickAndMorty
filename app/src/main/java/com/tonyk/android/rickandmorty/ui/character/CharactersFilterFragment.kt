@@ -38,8 +38,8 @@ class CharactersFilterFragment : Fragment() {
             binding.namePicker.text.clear()
             binding.speciesPicker.text.clear()
             binding.typePicker.text.clear()
-            binding.radioGroup2.clearCheck()
-            binding.radioGroup.clearCheck()
+            binding.statusGroup.clearCheck()
+            binding.genderGroup.clearCheck()
         }
 
         binding.backBtn.setOnClickListener {
@@ -51,16 +51,16 @@ class CharactersFilterFragment : Fragment() {
         binding.typePicker.setText(currentFilter.type)
 
         when (currentFilter.status) {
-            "Alive" -> binding.radioGroup2.check(R.id.alivePick)
-            "Dead" -> binding.radioGroup2.check(R.id.deadPick)
-            "unknown" -> binding.radioGroup2.check(R.id.UnknowStatusPick)
+            "Alive" -> binding.statusGroup.check(R.id.alivePick)
+            "Dead" -> binding.statusGroup.check(R.id.deadPick)
+            "unknown" -> binding.statusGroup.check(R.id.UnknowStatusPick)
         }
 
         when (currentFilter.gender) {
-            "Male" -> binding.radioGroup.check(R.id.malePick)
-            "Female" -> binding.radioGroup.check(R.id.femalePick)
-            "Genderless" -> binding.radioGroup.check(R.id.genderlessPick)
-            "unknown" -> binding.radioGroup.check(R.id.unknownGenderPick)
+            "Male" -> binding.genderGroup.check(R.id.malePick)
+            "Female" -> binding.genderGroup.check(R.id.femalePick)
+            "Genderless" -> binding.genderGroup.check(R.id.genderlessPick)
+            "unknown" -> binding.genderGroup.check(R.id.unknownGenderPick)
         }
 
         binding.applyButton.setOnClickListener {
@@ -68,13 +68,13 @@ class CharactersFilterFragment : Fragment() {
             val species = binding.speciesPicker.text.toString().takeIf { it.isNotEmpty() }
             val type = binding.typePicker.text.toString().takeIf { it.isNotEmpty() }
 
-            val selectedStatus = when (binding.radioGroup2.checkedRadioButtonId) {
+            val selectedStatus = when (binding.statusGroup.checkedRadioButtonId) {
                 R.id.alivePick -> "Alive"
                 R.id.deadPick -> "Dead"
                 R.id.UnknowStatusPick -> "unknown"
                 else -> null
             }
-            val selectedGender = when (binding.radioGroup.checkedRadioButtonId) {
+            val selectedGender = when (binding.genderGroup.checkedRadioButtonId) {
                 R.id.malePick -> "Male"
                 R.id.femalePick -> "Female"
                 R.id.genderlessPick -> "Genderless"
