@@ -27,14 +27,21 @@ abstract class BaseDetailViewModel<T : Any>(
             _networkStatus = status
             _dataFlow.value = PagingData.empty()
             viewModelScope.coroutineContext.cancelChildren()
-            loadData()
+            loadListData()
             alreadyLoaded = true
         }
         else if (!alreadyLoaded) {
-            loadData()
+            loadListData()
             alreadyLoaded = true
         }
     }
 
-    abstract fun loadData()
+    fun refreshPage(status: Boolean) {
+        _networkStatus = status
+        _dataFlow.value = PagingData.empty()
+        viewModelScope.coroutineContext.cancelChildren()
+        loadListData()
+    }
+
+    abstract fun loadListData()
 }

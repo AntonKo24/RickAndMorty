@@ -35,45 +35,64 @@ class EpisodeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEpisodeDetailsBinding.inflate(inflater, container, false)
-
-        val urls = args.episode.characters
-        val ld = mutableListOf<String>()
-        for (url in urls) {
-            val parts = url.split('/')
-            val lastDigit = parts.last()
-            ld.add(lastDigit)
-        }
-        if (ld.isEmpty()) binding.progressBar.isVisible = false
-        else detailsViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUi()
+        setupListData(args.episode.characters)
+        setupAdapter()
 
+    }
 
-        binding.airDateEpisode.text = args.episode.air_date
-        binding.episodeNameText.text = args.episode.name
-        binding.episodeNumberText.text = args.episode.episode
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    private fun refreshData() {
+        val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
+        detailsViewModel.refreshPage(statusRefreshed)
+        binding.SwipeRefreshLayout.isRefreshing = false
+    }
 
-
-
-
-        binding.episodeCharList.layoutManager = GridLayoutManager(context, 2)
-
+    private fun setupUi() {
+        binding.apply {
+            airDateEpisode.text = args.episode.air_date
+            episodeNameText.text = args.episode.name
+            episodeNumberText.text = args.episode.episode
+            SwipeRefreshLayout.setOnRefreshListener {
+                refreshData()
+            }
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+    }
+    private fun setupListData(urls : List<String>) {
+        val idList = mutableListOf<String>()
+        for (url in urls) {
+            val id = url.substringAfterLast("/")
+            if (id!="") idList.add(id)
+        }
+        if (idList.isEmpty()) binding.progressBar.isVisible = false
+        else detailsViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), idList)
+    }
+    private fun setupAdapter() {
         val adapter = CharactersListAdapter(
             onCharacterClicked = {
-                    it ->
                 findNavController().navigate(EpisodeDetailsFragmentDirections.toCharacterDetails(it))
             }
         )
+        binding.apply {
+            episodeCharList.adapter = adapter
+            episodeCharList.layoutManager = GridLayoutManager(context, 2)
+        }
 
-        binding.episodeCharList.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detailsViewModel.dataFlow.collect() { data ->
+                detailsViewModel.dataFlow.collect { data ->
                     adapter.submitData(data)
                 }
             }
@@ -89,10 +108,5 @@ class EpisodeDetailsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

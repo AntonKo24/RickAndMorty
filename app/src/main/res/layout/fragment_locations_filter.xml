@@ -4,18 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/back_2">
+    android:background="@color/back_1">
 
     <EditText
         android:id="@+id/locationNamePicker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/back_2"
         android:ems="10"
         android:hint="Name"
         android:inputType="text"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clearBtn" />
@@ -23,13 +27,17 @@
     <EditText
         android:id="@+id/locationTypePicker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/back_2"
         android:ems="10"
         android:hint="Type"
         android:inputType="text"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locationNamePicker" />
@@ -37,13 +45,17 @@
     <EditText
         android:id="@+id/locationDimensionPicker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/back_2"
         android:ems="10"
         android:hint="Dimension"
         android:inputType="text"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locationTypePicker" />
@@ -57,6 +69,7 @@
         android:layout_marginBottom="16dp"
         android:background="@color/back_main"
         android:text="apply"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -71,7 +84,7 @@
         android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back"  />
+        app:srcCompat="@drawable/ic_back" />
 
     <TextView
         android:id="@+id/clearBtn"
@@ -79,9 +92,24 @@
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/back_main"
+        android:background="@color/back_2"
         android:padding="8dp"
         android:text="CLEAR"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/filterTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        android:text="Location Filter"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/clearBtn"
+        app:layout_constraintEnd_toStartOf="@+id/clearBtn"
+        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintTop_toTopOf="@+id/clearBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

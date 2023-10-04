@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EpisodesViewModel @Inject constructor(
+class EpisodesListViewModel @Inject constructor(
     private val repository: EpisodesRepositoryImpl
 ) : BaseListViewModel<EpisodeEntity, EpisodeFilter>(EpisodeFilter()) {
 

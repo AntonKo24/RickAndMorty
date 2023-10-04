@@ -40,7 +40,7 @@ class CharacterDetailsViewModel @Inject constructor(
     )
     val origin: StateFlow<LocationEntity> get() = _origin
 
-    override fun loadData() {
+    override fun loadListData() {
         if (ids.isNotEmpty())
             viewModelScope.launch {
                 episodesRepository.getEpisodeListById(ids, networkStatus)
@@ -51,29 +51,27 @@ class CharacterDetailsViewModel @Inject constructor(
             }
     }
 
-    fun loadLocation(id: String?) {
-        if (id != null) {
+    fun loadLocations(locationID: String?, originID: String?) {
+        if (locationID != null) {
             viewModelScope.launch {
                 try {
-                    val result = locationRepository.getLocationById(id, networkStatus)
+                    val result = locationRepository.getLocationById(locationID, networkStatus)
                     if (result != null) _location.value = result
                 } catch (e: Exception) {
 
                 }
             }
         }
-    }
+            if (originID != null) {
+                viewModelScope.launch {
+                    try {
+                        val result = locationRepository.getLocationById(originID, networkStatus)
+                        if (result != null) _origin.value = result
+                    } catch (e: Exception) {
 
-    fun loadOrigin(id: String?) {
-        if (id != null) {
-            viewModelScope.launch {
-                try {
-                    val result = locationRepository.getLocationById(id, networkStatus)
-                    if (result != null) _origin.value = result
-                } catch (e: Exception) {
-
+                    }
                 }
-            }
+
         }
     }
 }

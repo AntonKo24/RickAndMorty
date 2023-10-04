@@ -1,7 +1,6 @@
 package com.tonyk.android.rickandmorty.ui.location
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,66 +34,79 @@ class LocationDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLocationDetailsBinding.inflate(inflater, container, false)
-
-
-
-
-        val urls = args.location.residents
-        Log.d("asdasdasd2sss", "${urls.size}")
-        val ld = mutableListOf<String>()
-        for (url in urls) {
-            val parts = url.split('/')
-            val lastDigit = parts.last()
-            if (lastDigit!="") ld.add(lastDigit)
-        }
-        if (ld.size < 1) binding.progressBar.isVisible = false
-        else {
-            Log.d("asdasdasd2sss", "${ld.size}")
-            locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld) }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUi()
+        setupListData(args.location.residents)
+        setupAdapter()
 
-
-        binding.locationName.text = args.location.name
-        binding.locationtypeTxt.text = args.location.type
-        binding.dimensionTxt.text = args.location.dimension
-
-        binding.locationCharList.layoutManager = GridLayoutManager(context, 2)
-
-        val adapter = CharactersListAdapter(
-            onCharacterClicked = { it ->
-                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it))
-            }
-        )
-
-        binding.locationCharList.adapter = adapter
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                locationDetailsViewmodel.dataFlow.collect() { data ->
-                    adapter.submitData(data)
-
-                }
-            }
-        }
-        lifecycleScope.launch {
-            adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.apply {
-                    progressBar.isVisible = loadStates.refresh is LoadState.Loading
-                    emptyStateText.isVisible = loadStates.refresh is LoadState.Error
-                    if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
-                        emptyStateText.isVisible = adapter.itemCount < 1
-                    }
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun setupUi() {
+        binding.apply {
+            locationName.text = args.location.name
+            locationtypeTxt.text = args.location.type
+            dimensionTxt.text = args.location.dimension
+            SwipeRefreshLayout.setOnRefreshListener {
+                refreshData()
+            }
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+    }
+    private fun setupListData(urls : List<String>) {
+        val idList = mutableListOf<String>()
+        for (url in urls) {
+            val id = url.substringAfterLast("/")
+            if (id!="") idList.add(id)
+        }
+        if (idList.size < 1)  { binding.progressBar.isVisible = false
+            binding.emptyStateText.isVisible = true }
+        else {
+            locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), idList) }
+    }
+    private fun setupAdapter() {
+        val adapter = CharactersListAdapter(
+            onCharacterClicked = { it ->
+                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it))
+            }
+        )
+        binding.apply {
+            locationCharList.adapter = adapter
+            locationCharList.layoutManager = GridLayoutManager(context, 2)
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                locationDetailsViewmodel.dataFlow.collect { data ->
+                    adapter.submitData(data)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                binding.apply {
+                    progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                    emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                }
+            }
+        }
+    }
+
+    private fun refreshData() {
+        val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
+        locationDetailsViewmodel.refreshPage(statusRefreshed)
+        binding.SwipeRefreshLayout.isRefreshing = false
     }
 }

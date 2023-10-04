@@ -21,10 +21,6 @@ abstract class BaseListViewModel<T : Any, FilterType : Any>(
 
     private var alreadyLoaded = false
 
-    fun getCurrentFilter(): FilterType {
-        return _currentFilter
-    }
-
     fun initializeData(status: Boolean) {
         if (status != _networkStatus) {
             _networkStatus = status
@@ -46,11 +42,15 @@ abstract class BaseListViewModel<T : Any, FilterType : Any>(
         loadListData()
     }
 
-    abstract fun loadListData()
+    fun getCurrentFilter(): FilterType {
+        return _currentFilter
+    }
 
     fun applyFilter(filter: FilterType) {
         _currentFilter = filter
         loadListData()
     }
+
+    abstract fun loadListData()
 }
 

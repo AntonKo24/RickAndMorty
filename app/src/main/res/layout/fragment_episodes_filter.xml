@@ -3,18 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/back_1">
 
     <EditText
         android:id="@+id/episodeNamePicker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/back_2"
         android:ems="10"
-        android:hint="Name"
+        android:hint="Episode "
         android:inputType="text"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,13 +28,17 @@
     <EditText
         android:id="@+id/episodeNumberPicker"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/back_2"
         android:ems="10"
-        android:hint="Episode"
+        android:hint="Episode (Example : S01E05)"
         android:inputType="text"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/episodeNamePicker" />
@@ -41,7 +50,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
+        android:background="@color/back_main"
         android:text="apply"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -64,8 +75,25 @@
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:background="@color/back_2"
         android:padding="8dp"
         android:text="CLEAR"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/filterTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="10dp"
+        android:text="Episode Filter"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/clearBtn"
+        app:layout_constraintEnd_toStartOf="@+id/clearBtn"
+        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintTop_toTopOf="@+id/clearBtn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

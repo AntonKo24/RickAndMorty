@@ -1,6 +1,5 @@
 package com.tonyk.android.rickandmorty.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(
+class CharactersListViewModel @Inject constructor(
     private val repository: CharactersRepositoryImpl
 ) : BaseListViewModel<CharacterEntity, CharacterFilter>(CharacterFilter()) {
 
@@ -25,10 +24,9 @@ class CharactersViewModel @Inject constructor(
                     .collect { pagingData ->
                         _dataFlow.value = pagingData
                     }
-                Log.d("debugio", "ЛОАД")
             }
             catch (e: Exception) {
-                Log.d("debugio", "$e")
+
             }
         }
     }

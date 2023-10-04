@@ -14,7 +14,7 @@ class DetailsViewModel @Inject constructor(
     private val repository: CharactersRepositoryImpl
 ) : BaseDetailViewModel<CharacterEntity>() {
 
-    override fun loadData() {
+    override fun loadListData() {
         if (ids.isNotEmpty()) {
             viewModelScope.launch {
                 repository.getCharacterListById(ids, networkStatus)

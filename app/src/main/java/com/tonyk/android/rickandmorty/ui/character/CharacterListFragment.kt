@@ -5,13 +5,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.ui.BaseListFragment
-import com.tonyk.android.rickandmorty.viewmodel.CharactersViewModel
+import com.tonyk.android.rickandmorty.viewmodel.CharactersListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CharacterListFragment : BaseListFragment<CharacterEntity, CharacterViewHolder>() {
 
-    override val viewModel: CharactersViewModel by activityViewModels()
+    override val viewModel: CharactersListViewModel by activityViewModels()
 
     override fun createAdapter(): PagingDataAdapter<CharacterEntity, CharacterViewHolder> {
         return CharactersListAdapter(

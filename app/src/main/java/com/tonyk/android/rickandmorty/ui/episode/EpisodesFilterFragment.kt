@@ -9,14 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesFilterBinding
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
-import com.tonyk.android.rickandmorty.viewmodel.EpisodesViewModel
+import com.tonyk.android.rickandmorty.viewmodel.EpisodesListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EpisodesFilterFragment : Fragment() {
     private var _binding: FragmentEpisodesFilterBinding? = null
     private val binding get() = _binding!!
-    private val episodesViewModel: EpisodesViewModel by activityViewModels()
+    private val episodesListViewModel: EpisodesListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +30,7 @@ class EpisodesFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentFilter = episodesViewModel.getCurrentFilter()
+        val currentFilter = episodesListViewModel.getCurrentFilter()
 
         binding.episodeNamePicker.setText(currentFilter.name)
         binding.episodeNumberPicker.setText(currentFilter.episode)
@@ -55,7 +55,7 @@ class EpisodesFilterFragment : Fragment() {
                 episode = episodeNumber
             )
 
-            episodesViewModel.applyFilter(episodeFilter)
+            episodesListViewModel.applyFilter(episodeFilter)
             findNavController().popBackStack()
         }
     }

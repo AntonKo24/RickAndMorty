@@ -1,7 +1,6 @@
 package com.tonyk.android.rickandmorty.util.pagingsources
 
 import android.net.Uri
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
@@ -25,7 +24,6 @@ class EpisodesPagingSource(
                     name = filter.name,
                     episode = filter.episode
                 )
-            Log.d("PAgingTest33333", "$apiResponse")
             episodesDao.insertEpisodes(apiResponse.results)
             var nextPageNumber: Int? = null
             if (apiResponse.info.next != null) {
@@ -40,7 +38,6 @@ class EpisodesPagingSource(
             )
 
         } catch (e: Exception) {
-            Log.d("PAgingTest33333", "ERROR")
             LoadResult.Error(e)
 
         }

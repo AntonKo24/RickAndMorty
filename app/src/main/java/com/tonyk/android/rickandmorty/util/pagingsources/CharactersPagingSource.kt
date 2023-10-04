@@ -1,7 +1,6 @@
 package com.tonyk.android.rickandmorty.util.pagingsources
 
 import android.net.Uri
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
@@ -18,7 +17,6 @@ class CharactersPagingDataSource(
 ) : PagingSource<Int, CharacterEntity>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterEntity> {
         val page = params.key ?: FIRST_PAGE_INDEX
-
         return try {
             val apiResponse =
                 api.fetchCharacters(
@@ -28,10 +26,8 @@ class CharactersPagingDataSource(
                     species = filter.species,
                     type = filter.type,
                     gender = filter.gender,
-
                 )
             charactersDao.insertCharacters(apiResponse.results)
-
             var nextPageNumber: Int? = null
             if (apiResponse.info.next != null) {
                 val uri = Uri.parse(apiResponse.info.next)

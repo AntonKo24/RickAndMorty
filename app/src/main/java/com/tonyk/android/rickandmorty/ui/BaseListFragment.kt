@@ -42,7 +42,6 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         updateStatusAndText(status)
 
-
         val adapter = createAdapter()
         observeData(adapter)
 
@@ -55,6 +54,7 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         observeLoadState(adapter)
 
         setupRefreshListener()
+
     }
 
     override fun onDestroyView() {
@@ -81,14 +81,13 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
     private fun updateStatusAndText(status: Boolean) {
         viewModel.initializeData(status)
         if (status) {
-            binding.statusText.text =  "ONLINE"
+            binding.statusText.text =  getString(R.string.online)
             binding.icStatus.load(R.drawable.ic_online)
         }
          else {
             binding.icStatus.load(R.drawable.ic_offline)
-            binding.statusText.text =  "OFFLINE"
+            binding.statusText.text =  getString(R.string.offline)
         }
-
     }
 
     private fun refreshData() {
@@ -97,12 +96,12 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         binding.apply {
             SwipeRefreshLayout.isRefreshing = false
             if (statusRefreshed) {
-                binding.statusText.text =  "ONLINE"
+                binding.statusText.text =  getString(R.string.online)
                 binding.icStatus.load(R.drawable.ic_online)
             }
             else {
                 binding.icStatus.load(R.drawable.ic_offline)
-                binding.statusText.text =  "OFFLINE"
+                binding.statusText.text =  getString(R.string.offline)
             }
         }
     }
