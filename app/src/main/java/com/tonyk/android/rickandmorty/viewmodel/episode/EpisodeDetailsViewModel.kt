@@ -5,11 +5,9 @@ import androidx.paging.cachedIn
 import com.tonyk.android.rickandmorty.data.repository.CharactersRepository
 import com.tonyk.android.rickandmorty.data.repository.EpisodesRepository
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
-import com.tonyk.android.rickandmorty.model.character.CharacterLocation
-import com.tonyk.android.rickandmorty.model.character.CharacterOrigin
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
-import com.tonyk.android.rickandmorty.viewmodel.BaseDetailViewModel
+import com.tonyk.android.rickandmorty.util.conventers.extractIdsFromUrls
+import com.tonyk.android.rickandmorty.viewmodel.base.BaseDetailViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,16 +23,25 @@ class EpisodeDetailsViewModel @Inject constructor(
     private val episodesRepository: EpisodesRepository
 ) : BaseDetailViewModel<CharacterEntity>() {
 
-    val episode : StateFlow<EpisodeEntity> get() = _episode
+    val episode: StateFlow<EpisodeEntity> get() = _episode
 
-    override fun loadListData(ids: List<String>) {
+    override fun loadListDetailsData(ids: List<String>) {
         if (ids.isNotEmpty()) {
             viewModelScope.launch {
-                charactersRepository.getCharacterListById(ids, networkStatus)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _dataFlow.value = pagingData
+                try {
+                    withContext(Dispatchers.IO) {
+                        charactersRepository.getCharacterListById(
+                            ids,
+                            networkStatus
+                        )
                     }
+                        .cachedIn(viewModelScope)
+                        .collect { pagingData ->
+                            _dataFlow.value = pagingData
+                        }
+                } catch (e: Exception) {
+                    handleException(e)
+                }
             }
         }
     }
@@ -42,20 +49,20 @@ class EpisodeDetailsViewModel @Inject constructor(
     override fun loadEntityData(id: Int) {
         viewModelScope.launch {
             try {
-                val result = withContext(Dispatchers.IO)  { episodesRepository.getEpisodeByID(id, networkStatus) }
-
+                val result = withContext(Dispatchers.IO) {
+                    episodesRepository.getEpisodeByID(
+                        id,
+                        networkStatus
+                    )
+                }
                 _episode.value = result
 
                 val urls = result.characters
-                val idList = mutableListOf<String>()
-                for (url in urls) {
-                    val id = url.substringAfterLast("/")
-                    if (id != "") idList.add(id)
-                }
-                withContext(Dispatchers.IO)  {loadListData(idList) }
+                val idList = urls.extractIdsFromUrls()
+                withContext(Dispatchers.IO) { loadListDetailsData(idList) }
 
             } catch (e: Exception) {
-
+                handleException(e)
             }
         }
     }

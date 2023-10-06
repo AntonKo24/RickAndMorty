@@ -1,13 +1,15 @@
-package com.tonyk.android.rickandmorty.viewmodel
+package com.tonyk.android.rickandmorty.viewmodel.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-
 
 abstract class BaseViewModel<T : Any>(
 ) : ViewModel() {
@@ -19,6 +21,8 @@ abstract class BaseViewModel<T : Any>(
     protected val _dataFlow = MutableStateFlow<PagingData<T>>(PagingData.empty())
     val dataFlow: StateFlow<PagingData<T>> = _dataFlow.asStateFlow()
 
+    protected val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
+    val errorState: SharedFlow<String> = _errorState
 
 
     fun initializeFragmentData(status: Boolean, dataLoading: () -> Unit) {
@@ -34,18 +38,6 @@ abstract class BaseViewModel<T : Any>(
         }
     }
 
-    fun initializeDetails(status: Boolean, id: Int) {
-        initializeFragmentData(status) {
-            loadEntityData(id)
-        }
-    }
-
-    fun initializeData(status: Boolean) {
-        initializeFragmentData(status) {
-            loadListData()
-        }
-    }
-
     fun refreshPage(status: Boolean, dataLoading: () -> Unit) {
         alreadyLoaded = false
         _dataFlow.value = PagingData.empty()
@@ -53,7 +45,10 @@ abstract class BaseViewModel<T : Any>(
         viewModelScope.coroutineContext.cancelChildren()
         dataLoading()
     }
+
+    protected suspend fun handleException(e: Exception) {
+        val errorMessage = "Something went wrong: ${e.message}"
+        _errorState.emit(errorMessage)
+        Log.e("ExceptionCatcher", errorMessage, e)
+    }
 }
-
-
-

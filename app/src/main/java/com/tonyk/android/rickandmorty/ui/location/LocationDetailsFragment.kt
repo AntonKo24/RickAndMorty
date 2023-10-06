@@ -40,11 +40,13 @@ class LocationDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         initializeFragment()
 
         setupUi()
 
         setupAdapter()
+
 
     }
 
@@ -55,31 +57,37 @@ class LocationDetailsFragment : Fragment() {
 
     private fun initializeFragment() {
         val status = NetworkChecker.isNetworkAvailable(requireContext())
-        locationDetailsViewmodel.initializeFragmentData(status, args.id)
+        locationDetailsViewmodel.initializeDetailsFragment(status, args.id)
     }
-
 
     private fun setupUi() {
         viewLifecycleOwner.lifecycleScope.launch {
-            locationDetailsViewmodel.location.collect {
+            locationDetailsViewmodel.location.collectLatest {
                 binding.apply {
                     locationName.text = it.name
                     locationtypeTxt.text = it.type
                     dimensionTxt.text = it.dimension
-                    SwipeRefreshLayout.setOnRefreshListener {
-                        refreshData()
-                    }
-                    backBtn.setOnClickListener {
-                        findNavController().popBackStack()
-                    }
+                    val residents = it.residents
+                    if (it.id != -1 && residents[0].isEmpty()) {
+                        progressBar.isVisible = false
+                        emptyStateText.isVisible = true
+                    } // can explain why it's here
                 }
+            }
+        }
+        binding.apply {
+            SwipeRefreshLayout.setOnRefreshListener {
+                refreshData()
+            }
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
             }
         }
     }
 
     private fun setupAdapter() {
         val adapter = CharactersListAdapter(
-            onCharacterClicked = { it ->
+            onCharacterClicked = {
                 findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it.id))
             }
         )
@@ -90,19 +98,20 @@ class LocationDetailsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 locationDetailsViewmodel.dataFlow.collect { data ->
-
                     adapter.submitData(data)
 
                 }
             }
         }
-
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 binding.apply {
-                    progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                    progressBar.isVisible =
+                        loadStates.refresh is LoadState.Loading || loadStates.append is LoadState.Loading
                     emptyStateText.isVisible = loadStates.refresh is LoadState.Error
-
+                    if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
+                        emptyStateText.isVisible = adapter.itemCount < 1
+                    }
                 }
             }
         }
@@ -110,7 +119,7 @@ class LocationDetailsFragment : Fragment() {
 
     private fun refreshData() {
         val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
-        locationDetailsViewmodel.refreshPage(args.id, statusRefreshed)
+        locationDetailsViewmodel.refreshDetailsFragment(statusRefreshed, args.id)
         binding.SwipeRefreshLayout.isRefreshing = false
     }
 }

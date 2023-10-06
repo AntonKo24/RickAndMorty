@@ -1,7 +1,5 @@
 package com.tonyk.android.rickandmorty.viewmodel.character
 
-import android.util.Log
-import androidx.core.view.isVisible
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.tonyk.android.rickandmorty.data.repository.CharactersRepository
@@ -12,8 +10,8 @@ import com.tonyk.android.rickandmorty.model.character.CharacterLocation
 import com.tonyk.android.rickandmorty.model.character.CharacterOrigin
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
-import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.BaseDetailViewModel
+import com.tonyk.android.rickandmorty.util.conventers.extractIdsFromUrls
+import com.tonyk.android.rickandmorty.viewmodel.base.BaseDetailViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,66 +27,78 @@ class CharacterDetailsViewModel @Inject constructor(
     private val charactersRepository: CharactersRepository
 ) : BaseDetailViewModel<EpisodeEntity>() {
 
-    val character : StateFlow<CharacterEntity> get() = _character
+    val character: StateFlow<CharacterEntity> get() = _character
     val location: StateFlow<LocationEntity> get() = _location
     val origin: StateFlow<LocationEntity> get() = _origin
 
     override fun loadEntityData(id: Int) {
-
         viewModelScope.launch {
             try {
-                val result = withContext(Dispatchers.IO)  { charactersRepository.getCharacterByID(id, networkStatus) }
+                val result = withContext(Dispatchers.IO) {
+                    charactersRepository.getCharacterByID(
+                        id,
+                        networkStatus
+                    )
+                }
                 _character.value = result
 
-
                 val urls = result.episode
-                val idList = mutableListOf<String>()
-                for (url in urls) {
-                    val residentID = url.substringAfterLast("/")
-                    idList.add(residentID)
-                }
-                withContext(Dispatchers.IO)  { loadListData(idList) }
+                val idList = urls.extractIdsFromUrls()
+                withContext(Dispatchers.IO) { loadListDetailsData(idList) }
 
                 val locationId = result.location.url.substringAfterLast("/")
                 val originID = result.origin.url.substringAfterLast("/")
                 withContext(Dispatchers.IO) { loadLocations(locationId, originID) }
 
             } catch (e: Exception) {
-
+                handleException(e)
             }
         }
     }
 
-    override fun loadListData(ids : List<String>) {
+    override fun loadListDetailsData(ids: List<String>) {
         if (ids.isNotEmpty())
             viewModelScope.launch {
-                episodesRepository.getEpisodeListById(ids, networkStatus)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        _dataFlow.value = pagingData
+                try {
+                    withContext(Dispatchers.IO) {
+                        episodesRepository.getEpisodeListById(ids, networkStatus)
+                            .cachedIn(viewModelScope)
+                            .collect { pagingData ->
+                                _dataFlow.value = pagingData
+                            }
                     }
+                } catch (e: Exception) {
+                    handleException(e)
+                }
             }
     }
 
-
     private fun loadLocations(locationID: String, originID: String) {
-        if (locationID.isNotEmpty()) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            if (locationID.isNotEmpty()) {
                 try {
-                    val result = locationRepository.getLocationById(locationID.toInt(), networkStatus)
-                    if (result != null) _location.value = result
+                    val locationResult = withContext(Dispatchers.IO) {
+                        locationRepository.getLocationById(
+                            locationID.toInt(),
+                            networkStatus
+                        )
+                    }
+                    if (locationResult != null) _location.value = locationResult
                 } catch (e: Exception) {
-
+                    handleException(e)
                 }
             }
-        }
-        if (originID.isNotEmpty()) {
-            viewModelScope.launch {
+            if (originID.isNotEmpty()) {
                 try {
-                    val result = locationRepository.getLocationById(originID.toInt(), networkStatus)
-                    if (result != null) _origin.value = result
+                    val originResult = withContext(Dispatchers.IO) {
+                        locationRepository.getLocationById(
+                            originID.toInt(),
+                            networkStatus
+                        )
+                    }
+                    if (originResult != null) _origin.value = originResult
                 } catch (e: Exception) {
-
+                    handleException(e)
                 }
             }
         }
