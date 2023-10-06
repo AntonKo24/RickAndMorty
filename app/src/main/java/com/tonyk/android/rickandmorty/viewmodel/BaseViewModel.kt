@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class BaseListViewModel<T : Any, FilterType : Any>(
-    defaultFilter: FilterType
+
+abstract class BaseViewModel<T : Any>(
 ) : ViewModel() {
     private var _networkStatus: Boolean = false
     val networkStatus get() = _networkStatus
@@ -20,40 +20,40 @@ abstract class BaseListViewModel<T : Any, FilterType : Any>(
     val dataFlow: StateFlow<PagingData<T>> = _dataFlow.asStateFlow()
 
 
-    protected var _currentFilter: FilterType = defaultFilter
 
-
-    fun initializeFragmentData(status: Boolean) {
+    fun initializeFragmentData(status: Boolean, dataLoading: () -> Unit) {
         if (status != _networkStatus) {
             _networkStatus = status
             _dataFlow.value = PagingData.empty()
             viewModelScope.coroutineContext.cancelChildren()
-            loadListData()
+            dataLoading()
             alreadyLoaded = true
-        }
-        else if (!alreadyLoaded) {
-            loadListData()
+        } else if (!alreadyLoaded) {
+            dataLoading()
             alreadyLoaded = true
         }
     }
 
-    fun refreshPage(status: Boolean) {
+    fun initializeDetails(status: Boolean, id: Int) {
+        initializeFragmentData(status) {
+            loadEntityData(id)
+        }
+    }
+
+    fun initializeData(status: Boolean) {
+        initializeFragmentData(status) {
+            loadListData()
+        }
+    }
+
+    fun refreshPage(status: Boolean, dataLoading: () -> Unit) {
         alreadyLoaded = false
         _dataFlow.value = PagingData.empty()
         _networkStatus = status
         viewModelScope.coroutineContext.cancelChildren()
-        initializeFragmentData(status)
+        dataLoading()
     }
-
-    fun getCurrentFilter(): FilterType {
-        return _currentFilter
-    }
-
-    fun applyFilter(filter: FilterType) {
-        _currentFilter = filter
-        loadListData()
-    }
-
-    abstract fun loadListData()
 }
+
+
 

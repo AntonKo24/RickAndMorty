@@ -13,35 +13,34 @@ abstract class BaseDetailViewModel<T : Any>(
 ) : ViewModel() {
     private var _networkStatus: Boolean = false
     val networkStatus get() = _networkStatus
+
     private var alreadyLoaded = false
 
     protected val _dataFlow = MutableStateFlow<PagingData<T>>(PagingData.empty())
     val dataFlow: StateFlow<PagingData<T>> = _dataFlow.asStateFlow()
 
-    private var _ids: List<String> = emptyList()
-    val ids: List<String> get() = _ids
-
-    fun getStatus(status: Boolean, idsInput: List<String>) {
-        _ids = idsInput
+    fun initializeFragmentData(status: Boolean, id: Int) {
         if (status != networkStatus) {
             _networkStatus = status
             _dataFlow.value = PagingData.empty()
             viewModelScope.coroutineContext.cancelChildren()
-            loadListData()
+            loadEntityData(id)
             alreadyLoaded = true
-        }
-        else if (!alreadyLoaded) {
-            loadListData()
+        } else if (!alreadyLoaded) {
+            loadEntityData(id)
             alreadyLoaded = true
         }
     }
 
-    fun refreshPage(status: Boolean) {
-        _networkStatus = status
+    fun refreshPage(id: Int, status: Boolean) {
+        alreadyLoaded = false
         _dataFlow.value = PagingData.empty()
+        _networkStatus = status
         viewModelScope.coroutineContext.cancelChildren()
-        loadListData()
+        initializeFragmentData(status, id)
     }
 
-    abstract fun loadListData()
+    abstract fun loadListData(ids: List<String>)
+
+    abstract fun loadEntityData(id: Int)
 }

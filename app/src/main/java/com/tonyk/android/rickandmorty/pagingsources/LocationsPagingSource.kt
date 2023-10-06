@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.util.pagingsources
+package com.tonyk.android.rickandmorty.pagingsources
 
 import android.net.Uri
 import androidx.paging.PagingSource
@@ -8,8 +8,9 @@ import com.tonyk.android.rickandmorty.data.database.LocationsDao
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
 import com.tonyk.android.rickandmorty.util.Constants
+import javax.inject.Inject
 
-class LocationsPagingSource(
+class LocationsPagingSource @Inject constructor(
     private val api: RickAndMortyApi,
     private val locationsDao: LocationsDao,
     private val filter: LocationFilter

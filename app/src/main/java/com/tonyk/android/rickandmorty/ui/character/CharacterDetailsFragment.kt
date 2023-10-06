@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,12 +19,10 @@ import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentCharacterDetailsBinding
 import com.tonyk.android.rickandmorty.ui.episode.EpisodeListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.CharacterDetailsViewModel
+import com.tonyk.android.rickandmorty.viewmodel.character.CharacterDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class CharacterDetailsFragment : Fragment() {
@@ -46,10 +43,22 @@ class CharacterDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initializeFragment()
+
         setupUi()
-        setupListData(args.character.episode)
+
         setupAdapter()
+
         setupLocationsData()
+
+        binding.apply {
+            SwipeRefreshLayout.setOnRefreshListener {
+                refreshData()
+            }
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -57,9 +66,14 @@ class CharacterDetailsFragment : Fragment() {
         _binding = null
     }
 
+    private fun initializeFragment() {
+        val status = NetworkChecker.isNetworkAvailable(requireContext())
+        characterDetailsViewModel.initializeFragmentData(status, args.id)
+    }
+
     private fun refreshData() {
         val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
-        characterDetailsViewModel.refreshPage(statusRefreshed)
+        characterDetailsViewModel.refreshPage(args.id, statusRefreshed )
         binding.SwipeRefreshLayout.isRefreshing = false
     }
 
@@ -68,7 +82,7 @@ class CharacterDetailsFragment : Fragment() {
             onEpisodeClicked = {
                 findNavController().navigate(
                     CharacterDetailsFragmentDirections.toEpisodeDetailsFragment(
-                        it
+                        it.id
                     )
                 )
             }
@@ -98,77 +112,63 @@ class CharacterDetailsFragment : Fragment() {
     }
 
     private fun setupUi() {
-        binding.apply {
-            charDetailsName.text = args.character.name
-            characterPhoto.load(args.character.image)
-            originLocationName.text = getString(R.string.origin_location, args.character.origin.name)
-            charLocationName.text = getString(R.string.location, args.character.location.name)
-            speciesText.text = getString(R.string.Species,args.character.species)
-            genderText.text = getString(R.string.Gender, args.character.gender)
-            if (args.character.type.isNotEmpty()) typeText.text = getString(R.string.Type, args.character.type)
-            charStatusText.text = getString(R.string.Status, args.character.status)
+        viewLifecycleOwner.lifecycleScope.launch {
+            characterDetailsViewModel.character.collect {
+                binding.apply {
+                    charDetailsName.text = it.name
+                    characterPhoto.load(it.image) {
+                        crossfade(true)
+                        placeholder(R.drawable.ic_loading)
+                        error(R.drawable.error_pic)
+                    }
+                    originLocationName.text =
+                        getString(R.string.origin_location, it.origin.name)
+                    charLocationName.text = getString(R.string.location, it.location.name)
+                    speciesText.text = getString(R.string.Species, it.species)
+                    genderText.text = getString(R.string.Gender, it.gender)
+                    if (it.type.isNotEmpty()) typeText.text =
+                        getString(R.string.Type, it.type)
+                    charStatusText.text = getString(R.string.Status, it.status)
 
-            SwipeRefreshLayout.setOnRefreshListener {
-                refreshData()
-            }
-            backBtn.setOnClickListener {
-                findNavController().popBackStack()
+                }
             }
         }
-
     }
 
     private fun setupLocationsData() {
-        val locationId = args.character.location.url.substringAfterLast("/")
-        val originID = args.character.origin.url.substringAfterLast("/")
-        characterDetailsViewModel.loadLocations(locationId, originID)
         viewLifecycleOwner.lifecycleScope.launch {
             characterDetailsViewModel.location.collect { location ->
-                binding.charLocationName.setOnClickListener {
-                    if (location.id != -1) {
-                        findNavController().navigate(
-                            CharacterDetailsFragmentDirections.toLocationDetails(
-                                location
+                if (location.id != -1) {
+                    binding.apply {
+                        charLocationName.text = getString(R.string.location_loaded, location.name)
+                        binding.charLocationName.setOnClickListener {
+                            findNavController().navigate(
+                                CharacterDetailsFragmentDirections.toLocationDetails(
+                                    location.id
+                                )
                             )
-                        )
-                    } else Toast.makeText(
-                        requireContext(),
-                        "Can't load Data about Location",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        }
+                    }
                 }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             characterDetailsViewModel.origin.collect { origin ->
-                withContext(Dispatchers.Main) {
-                    binding.originLocationName.setOnClickListener {
-                        if (origin.id != -1) {
+                if (origin.id != -1) {
+                    binding.apply {
+                        originLocationName.text = getString(R.string.origin_location_loaded, origin.name)
+                        binding.originLocationName.setOnClickListener {
+
                             findNavController().navigate(
                                 CharacterDetailsFragmentDirections.toLocationDetails(
-                                    origin
+                                    origin.id
                                 )
                             )
-                        } else Toast.makeText(
-                            requireContext(),
-                            "Can't load Data about Location",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        }
                     }
                 }
             }
         }
     }
-    private fun setupListData(urls : List<String>) {
-        val idList = mutableListOf<String>()
-        for (url in urls) {
-            val id = url.substringAfterLast("/")
-            if (id!="") idList.add(id)
-        }
-        if (idList.isEmpty()) binding.progressBar.isVisible = false
-        else characterDetailsViewModel.getStatus(
-            NetworkChecker.isNetworkAvailable(requireContext()),
-            idList
-        )
-    }
+
 }

@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.util.pagingsources
+package com.tonyk.android.rickandmorty.pagingsources
 
 import android.net.Uri
 import androidx.paging.PagingSource
@@ -8,9 +8,10 @@ import com.tonyk.android.rickandmorty.data.database.EpisodesDao
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.util.Constants.FIRST_PAGE_INDEX
+import javax.inject.Inject
 
 
-class EpisodesPagingSource(
+class EpisodesPagingSource @Inject constructor(
     private val api: RickAndMortyApi,
     private val episodesDao: EpisodesDao,
     private val filter: EpisodeFilter

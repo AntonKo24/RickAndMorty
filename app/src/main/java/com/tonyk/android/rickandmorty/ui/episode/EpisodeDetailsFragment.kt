@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodeDetailsBinding
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.DetailsViewModel
+import com.tonyk.android.rickandmorty.viewmodel.episode.EpisodeDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class EpisodeDetailsFragment : Fragment() {
     private var _binding: FragmentEpisodeDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: EpisodeDetailsFragmentArgs by navArgs()
-    private val detailsViewModel : DetailsViewModel by viewModels()
+    private val episodeDetailsViewModel : EpisodeDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,8 +41,10 @@ class EpisodeDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initializeFragment()
+
         setupUi()
-        setupListData(args.episode.characters)
+
         setupAdapter()
 
     }
@@ -51,38 +53,40 @@ class EpisodeDetailsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun initializeFragment() {
+        val status = NetworkChecker.isNetworkAvailable(requireContext())
+        episodeDetailsViewModel.initializeFragmentData(status, args.id)
+    }
+
     private fun refreshData() {
         val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
-        detailsViewModel.refreshPage(statusRefreshed)
+        episodeDetailsViewModel.refreshPage(args.id, statusRefreshed)
         binding.SwipeRefreshLayout.isRefreshing = false
     }
 
     private fun setupUi() {
-        binding.apply {
-            airDateEpisode.text = args.episode.air_date
-            episodeNameText.text = args.episode.name
-            episodeNumberText.text = args.episode.episode
-            SwipeRefreshLayout.setOnRefreshListener {
-                refreshData()
-            }
-            backBtn.setOnClickListener {
-                findNavController().popBackStack()
+        viewLifecycleOwner.lifecycleScope.launch {
+            episodeDetailsViewModel.episode.collect {
+                binding.apply {
+                    airDateEpisode.text = it.air_date
+                    episodeNameText.text = it.name
+                    episodeNumberText.text = it.episode
+                    SwipeRefreshLayout.setOnRefreshListener {
+                        refreshData()
+                    }
+                    backBtn.setOnClickListener {
+                        findNavController().popBackStack()
+                    }
+                }
             }
         }
     }
-    private fun setupListData(urls : List<String>) {
-        val idList = mutableListOf<String>()
-        for (url in urls) {
-            val id = url.substringAfterLast("/")
-            if (id!="") idList.add(id)
-        }
-        if (idList.isEmpty()) binding.progressBar.isVisible = false
-        else detailsViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), idList)
-    }
+
     private fun setupAdapter() {
         val adapter = CharactersListAdapter(
             onCharacterClicked = {
-                findNavController().navigate(EpisodeDetailsFragmentDirections.toCharacterDetails(it))
+                findNavController().navigate(EpisodeDetailsFragmentDirections.toCharacterDetails(it.id))
             }
         )
         binding.apply {
@@ -92,7 +96,7 @@ class EpisodeDetailsFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detailsViewModel.dataFlow.collect { data ->
+                episodeDetailsViewModel.dataFlow.collect { data ->
                     adapter.submitData(data)
                 }
             }

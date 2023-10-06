@@ -24,6 +24,7 @@ class CharacterViewHolder(
             characterStatus.text = characterEntity.status
             characterImage.load(characterEntity.image) {
                 crossfade(true)
+                placeholder(R.drawable.ic_loading)
                 error(R.drawable.error_pic)
             }
 

@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesFilterBinding
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
-import com.tonyk.android.rickandmorty.viewmodel.EpisodesListViewModel
+import com.tonyk.android.rickandmorty.viewmodel.episode.EpisodesListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

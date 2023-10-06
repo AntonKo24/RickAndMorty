@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationsFilterBinding
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
-import com.tonyk.android.rickandmorty.viewmodel.LocationsListViewModel
+import com.tonyk.android.rickandmorty.viewmodel.location.LocationsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -4,8 +4,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
-import com.tonyk.android.rickandmorty.ui.BaseListFragment
-import com.tonyk.android.rickandmorty.viewmodel.CharactersListViewModel
+import com.tonyk.android.rickandmorty.ui.base.BaseListFragment
+import com.tonyk.android.rickandmorty.viewmodel.character.CharactersListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,7 +18,7 @@ class CharacterListFragment : BaseListFragment<CharacterEntity, CharacterViewHol
             onCharacterClicked = { character ->
                 findNavController().navigate(
                     CharacterListFragmentDirections.toCharacterDetail(
-                        character
+                        character.id
                     )
                 )
             }
@@ -28,5 +28,4 @@ class CharacterListFragment : BaseListFragment<CharacterEntity, CharacterViewHol
     override fun navigateToFilterFragment() {
         findNavController().navigate(CharacterListFragmentDirections.toCharactersFilterFragment())
     }
-
 }

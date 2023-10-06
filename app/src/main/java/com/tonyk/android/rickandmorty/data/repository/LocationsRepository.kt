@@ -12,7 +12,7 @@ interface LocationsRepository {
     ): Flow<PagingData<LocationEntity>>
 
     suspend fun getLocationById(
-        id: String,
+        id: Int,
         status: Boolean
     ): LocationEntity?
 

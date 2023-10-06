@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.ui
+package com.tonyk.android.rickandmorty.ui.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -79,7 +79,7 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
     }
 
     private fun updateStatusAndText(status: Boolean) {
-        viewModel.initializeData(status)
+        viewModel.initializeFragmentData(status)
         if (status) {
             binding.statusText.text =  getString(R.string.online)
             binding.icStatus.load(R.drawable.ic_online)

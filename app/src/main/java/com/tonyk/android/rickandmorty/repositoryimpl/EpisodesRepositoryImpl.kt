@@ -8,9 +8,8 @@ import com.tonyk.android.rickandmorty.data.database.EpisodesDao
 import com.tonyk.android.rickandmorty.data.repository.EpisodesRepository
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
-import com.tonyk.android.rickandmorty.util.Constants
 import com.tonyk.android.rickandmorty.util.Constants.PAGE_SIZE
-import com.tonyk.android.rickandmorty.util.pagingsources.EpisodesPagingSource
+import com.tonyk.android.rickandmorty.pagingsources.EpisodesPagingSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -54,5 +53,13 @@ class EpisodesRepositoryImpl @Inject constructor(
                 )
             }
         ).flow
+    }
+
+    override suspend fun getEpisodeByID(id: Int, status: Boolean): EpisodeEntity {
+            if (status) {
+                val result = api.fetchEpisodeByID(id)
+                episodesDao.insertEpisode(result)
+            }
+            return episodesDao.getEpisodeByID(id)
     }
 }

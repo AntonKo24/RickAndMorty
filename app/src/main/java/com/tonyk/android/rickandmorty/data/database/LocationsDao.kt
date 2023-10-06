@@ -12,6 +12,9 @@ interface LocationsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocations(characters: List<LocationEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocation(locationEntity: LocationEntity)
+
     @Query(
         "SELECT * FROM locations WHERE " +
                 "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
@@ -25,8 +28,6 @@ interface LocationsDao {
     ): PagingSource<Int, LocationEntity>
 
     @Query("SELECT * FROM locations WHERE id IN (:id) ")
-    suspend fun getLocationByID(id: String): LocationEntity?
+    suspend fun getLocationByID(id: Int): LocationEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(locationEntity: LocationEntity)
 }

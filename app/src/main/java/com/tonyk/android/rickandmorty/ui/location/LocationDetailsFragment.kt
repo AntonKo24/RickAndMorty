@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.DetailsViewModel
+import com.tonyk.android.rickandmorty.viewmodel.location.LocationDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class LocationDetailsFragment : Fragment() {
     private var _binding: FragmentLocationDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: LocationDetailsFragmentArgs by navArgs()
-    private val locationDetailsViewmodel: DetailsViewModel by viewModels()
+    private val locationDetailsViewmodel: LocationDetailsViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,8 +40,10 @@ class LocationDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initializeFragment()
+
         setupUi()
-        setupListData(args.location.residents)
+
         setupAdapter()
 
     }
@@ -51,35 +53,34 @@ class LocationDetailsFragment : Fragment() {
         _binding = null
     }
 
+    private fun initializeFragment() {
+        val status = NetworkChecker.isNetworkAvailable(requireContext())
+        locationDetailsViewmodel.initializeFragmentData(status, args.id)
+    }
+
 
     private fun setupUi() {
-        binding.apply {
-            locationName.text = args.location.name
-            locationtypeTxt.text = args.location.type
-            dimensionTxt.text = args.location.dimension
-            SwipeRefreshLayout.setOnRefreshListener {
-                refreshData()
-            }
-            backBtn.setOnClickListener {
-                findNavController().popBackStack()
+        viewLifecycleOwner.lifecycleScope.launch {
+            locationDetailsViewmodel.location.collect {
+                binding.apply {
+                    locationName.text = it.name
+                    locationtypeTxt.text = it.type
+                    dimensionTxt.text = it.dimension
+                    SwipeRefreshLayout.setOnRefreshListener {
+                        refreshData()
+                    }
+                    backBtn.setOnClickListener {
+                        findNavController().popBackStack()
+                    }
+                }
             }
         }
     }
-    private fun setupListData(urls : List<String>) {
-        val idList = mutableListOf<String>()
-        for (url in urls) {
-            val id = url.substringAfterLast("/")
-            if (id!="") idList.add(id)
-        }
-        if (idList.size < 1)  { binding.progressBar.isVisible = false
-            binding.emptyStateText.isVisible = true }
-        else {
-            locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), idList) }
-    }
+
     private fun setupAdapter() {
         val adapter = CharactersListAdapter(
             onCharacterClicked = { it ->
-                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it))
+                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it.id))
             }
         )
         binding.apply {
@@ -89,7 +90,9 @@ class LocationDetailsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 locationDetailsViewmodel.dataFlow.collect { data ->
+
                     adapter.submitData(data)
+
                 }
             }
         }
@@ -99,6 +102,7 @@ class LocationDetailsFragment : Fragment() {
                 binding.apply {
                     progressBar.isVisible = loadStates.refresh is LoadState.Loading
                     emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+
                 }
             }
         }
@@ -106,7 +110,7 @@ class LocationDetailsFragment : Fragment() {
 
     private fun refreshData() {
         val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
-        locationDetailsViewmodel.refreshPage(statusRefreshed)
+        locationDetailsViewmodel.refreshPage(args.id, statusRefreshed)
         binding.SwipeRefreshLayout.isRefreshing = false
     }
 }

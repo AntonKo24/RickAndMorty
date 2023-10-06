@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersFilterBinding
 import com.tonyk.android.rickandmorty.model.character.CharacterFilter
-import com.tonyk.android.rickandmorty.viewmodel.CharactersListViewModel
+import com.tonyk.android.rickandmorty.viewmodel.character.CharactersListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +34,7 @@ class CharactersFilterFragment : Fragment() {
         val currentFilter = charactersListViewModel.getCurrentFilter()
 
         binding.apply {
+
             clearBtn.setOnClickListener {
                 namePicker.text.clear()
                 speciesPicker.text.clear()
@@ -41,9 +42,11 @@ class CharactersFilterFragment : Fragment() {
                 statusGroup.clearCheck()
                 genderGroup.clearCheck()
             }
+
             backBtn.setOnClickListener {
                 findNavController().popBackStack()
             }
+
             namePicker.setText(currentFilter.name)
             speciesPicker.setText(currentFilter.species)
             typePicker.setText(currentFilter.type)

@@ -9,7 +9,7 @@ import com.tonyk.android.rickandmorty.data.repository.LocationsRepository
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
 import com.tonyk.android.rickandmorty.util.Constants
-import com.tonyk.android.rickandmorty.util.pagingsources.LocationsPagingSource
+import com.tonyk.android.rickandmorty.pagingsources.LocationsPagingSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ class LocationsRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getLocationById(id: String, status: Boolean): LocationEntity? {
+    override suspend fun getLocationById(id: Int, status: Boolean): LocationEntity? {
         if (status) {
             val result = api.fetchLocationById(id)
             locationsDao.insertLocation(result)
