@@ -9,14 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesFilterBinding
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
-import com.tonyk.android.rickandmorty.viewmodel.EpisodesViewModel
+import com.tonyk.android.rickandmorty.viewmodel.episode.EpisodesListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EpisodesFilterFragment : Fragment() {
     private var _binding: FragmentEpisodesFilterBinding? = null
     private val binding get() = _binding!!
-    private val episodesViewModel: EpisodesViewModel by activityViewModels()
+    private val episodesListViewModel: EpisodesListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,33 +30,31 @@ class EpisodesFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currentFilter = episodesViewModel.getCurrentFilter()
+        val currentFilter = episodesListViewModel.getCurrentFilter()
 
-        binding.episodeNamePicker.setText(currentFilter.name)
-        binding.episodeNumberPicker.setText(currentFilter.episode)
+        binding.apply {
+            episodeNamePicker.setText(currentFilter.name)
+            episodeNumberPicker.setText(currentFilter.episode)
 
-        binding.backBtn.setOnClickListener {
-            findNavController().popBackStack()
-        }
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
 
-        binding.clearBtn.setOnClickListener {
-            binding.episodeNamePicker.text.clear()
-            binding.episodeNumberPicker.text.clear()
-        }
+            clearBtn.setOnClickListener {
+                episodeNamePicker.text.clear()
+                episodeNumberPicker.text.clear()
+            }
 
-        binding.buttonApply.setOnClickListener {
-
-            val episodeName = binding.episodeNamePicker.text.toString().takeIf { it.isNotEmpty() }
-            val episodeNumber =
-                binding.episodeNumberPicker.text.toString().takeIf { it.isNotEmpty() }
-
-            val episodeFilter = EpisodeFilter(
-                name = episodeName,
-                episode = episodeNumber
-            )
-
-            episodesViewModel.applyFilter(episodeFilter)
-            findNavController().popBackStack()
+            buttonApply.setOnClickListener {
+                val episodeName = episodeNamePicker.text.toString().takeIf { it.isNotEmpty() }
+                val episodeNumber = episodeNumberPicker.text.toString().takeIf { it.isNotEmpty() }
+                val episodeFilter = EpisodeFilter(
+                    name = episodeName,
+                    episode = episodeNumber
+                )
+                episodesListViewModel.applyFilter(episodeFilter)
+                findNavController().popBackStack()
+            }
         }
     }
 

@@ -5,29 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodeDetailsBinding
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+import com.tonyk.android.rickandmorty.ui.base.BaseDetailsFragment
+import com.tonyk.android.rickandmorty.ui.character.CharacterViewHolder
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
-import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.DetailsViewModel
+import com.tonyk.android.rickandmorty.viewmodel.episode.EpisodeDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EpisodeDetailsFragment : Fragment() {
+class EpisodeDetailsFragment : BaseDetailsFragment<CharacterEntity, CharacterViewHolder>() {
     private var _binding: FragmentEpisodeDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: EpisodeDetailsFragmentArgs by navArgs()
-    private val detailsViewModel : DetailsViewModel by viewModels()
+
+    override val viewModel: EpisodeDetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,53 +36,60 @@ class EpisodeDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEpisodeDetailsBinding.inflate(inflater, container, false)
-
-        val urls = args.episode.characters
-        val ld = mutableListOf<String>()
-        for (url in urls) {
-            val parts = url.split('/')
-            val lastDigit = parts.last()
-            ld.add(lastDigit)
-        }
-        if (ld.isEmpty()) binding.progressBar.isVisible = false
-        else detailsViewModel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initDetailsFragment(args.id)
 
+    }
 
-        binding.airDateEpisode.text = args.episode.air_date
-        binding.episodeNameText.text = args.episode.name
-        binding.episodeNumberText.text = args.episode.episode
-
-
-
-
-        binding.episodeCharList.layoutManager = GridLayoutManager(context, 2)
-
-        val adapter = CharactersListAdapter(
+    override fun createAdapter(): PagingDataAdapter<CharacterEntity, CharacterViewHolder> {
+        return CharactersListAdapter(
             onCharacterClicked = {
-                    it ->
-                findNavController().navigate(EpisodeDetailsFragmentDirections.toCharacterDetails(it))
+                findNavController().navigate(EpisodeDetailsFragmentDirections.toCharacterDetails(it.id))
             }
         )
+    }
 
-        binding.episodeCharList.adapter = adapter
+    override fun setupUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                detailsViewModel.dataFlow.collect() { data ->
-                    adapter.submitData(data)
+            viewModel.episode.collect {
+                binding.apply {
+                    airDateEpisode.text = it.air_date
+                    episodeNameText.text = it.name
+                    episodeNumberText.text = it.episode
                 }
             }
         }
+        binding.apply {
+            SwipeRefreshLayout.setOnRefreshListener {
+                refreshFragmentData(args.id)
+                SwipeRefreshLayout.isRefreshing = false
+            }
+            binding.backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    override fun setupAdapter(adapter: PagingDataAdapter<CharacterEntity, CharacterViewHolder>) {
+        binding.apply {
+            episodeCharList.adapter = adapter
+            episodeCharList.layoutManager = GridLayoutManager(context, 2)
+        }
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
-                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                binding.apply {
+                    progressBar.isVisible =
+                        loadStates.refresh is LoadState.Loading || loadStates.append is LoadState.Loading
+                    emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                    if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
+                        emptyStateText.isVisible = adapter.itemCount < 1
+                    }
+                }
             }
         }
     }

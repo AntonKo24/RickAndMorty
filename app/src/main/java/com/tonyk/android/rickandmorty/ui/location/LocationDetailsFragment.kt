@@ -1,7 +1,6 @@
 package com.tonyk.android.rickandmorty.ui.location
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
-import com.tonyk.android.rickandmorty.viewmodel.DetailsViewModel
+import com.tonyk.android.rickandmorty.viewmodel.location.LocationDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -28,29 +27,13 @@ class LocationDetailsFragment : Fragment() {
     private var _binding: FragmentLocationDetailsBinding? = null
     private val binding get() = _binding!!
     private val args: LocationDetailsFragmentArgs by navArgs()
-    private val locationDetailsViewmodel: DetailsViewModel by viewModels()
+    private val locationDetailsViewmodel: LocationDetailsViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLocationDetailsBinding.inflate(inflater, container, false)
-
-
-
-
-        val urls = args.location.residents
-        Log.d("asdasdasd2sss", "${urls.size}")
-        val ld = mutableListOf<String>()
-        for (url in urls) {
-            val parts = url.split('/')
-            val lastDigit = parts.last()
-            if (lastDigit!="") ld.add(lastDigit)
-        }
-        if (ld.size < 1) binding.progressBar.isVisible = false
-        else {
-            Log.d("asdasdasd2sss", "${ld.size}")
-            locationDetailsViewmodel.getStatus(NetworkChecker.isNetworkAvailable(requireContext()), ld) }
         return binding.root
     }
 
@@ -58,23 +41,63 @@ class LocationDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        initializeFragment()
 
-        binding.locationName.text = args.location.name
-        binding.locationtypeTxt.text = args.location.type
-        binding.dimensionTxt.text = args.location.dimension
+        setupUi()
 
-        binding.locationCharList.layoutManager = GridLayoutManager(context, 2)
+        setupAdapter()
 
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initializeFragment() {
+        val status = NetworkChecker.isNetworkAvailable(requireContext())
+        locationDetailsViewmodel.initializeDetailsFragment(status, args.id)
+    }
+
+    private fun setupUi() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            locationDetailsViewmodel.location.collectLatest {
+                binding.apply {
+                    locationName.text = it.name
+                    locationtypeTxt.text = it.type
+                    dimensionTxt.text = it.dimension
+                    val residents = it.residents
+                    if (it.id != -1 && residents[0].isEmpty()) {
+                        progressBar.isVisible = false
+                        emptyStateText.isVisible = true
+                    } // can explain why it's here
+                }
+            }
+        }
+        binding.apply {
+            SwipeRefreshLayout.setOnRefreshListener {
+                refreshData()
+            }
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun setupAdapter() {
         val adapter = CharactersListAdapter(
-            onCharacterClicked = { it ->
-                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it))
+            onCharacterClicked = {
+                findNavController().navigate(LocationDetailsFragmentDirections.toCharacterDetails(it.id))
             }
         )
-
-        binding.locationCharList.adapter = adapter
+        binding.apply {
+            locationCharList.adapter = adapter
+            locationCharList.layoutManager = GridLayoutManager(context, 2)
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                locationDetailsViewmodel.dataFlow.collect() { data ->
+                locationDetailsViewmodel.dataFlow.collect { data ->
                     adapter.submitData(data)
 
                 }
@@ -82,14 +105,21 @@ class LocationDetailsFragment : Fragment() {
         }
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
-                binding.emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                binding.apply {
+                    progressBar.isVisible =
+                        loadStates.refresh is LoadState.Loading || loadStates.append is LoadState.Loading
+                    emptyStateText.isVisible = loadStates.refresh is LoadState.Error
+                    if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
+                        emptyStateText.isVisible = adapter.itemCount < 1
+                    }
+                }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun refreshData() {
+        val statusRefreshed = NetworkChecker.isNetworkAvailable(requireContext())
+        locationDetailsViewmodel.refreshDetailsFragment(statusRefreshed, args.id)
+        binding.SwipeRefreshLayout.isRefreshing = false
     }
 }

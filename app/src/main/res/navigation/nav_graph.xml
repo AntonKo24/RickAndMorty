@@ -22,12 +22,12 @@
         <action
             android:id="@+id/toLocationDetails"
             app:destination="@id/locationDetailsFragment" />
-        <argument
-            android:name="character"
-            app:argType="com.tonyk.android.rickandmorty.model.character.CharacterEntity" />
         <action
             android:id="@+id/toEpisodeDetailsFragment"
             app:destination="@id/episodeDetailsFragment" />
+        <argument
+            android:name="id"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/locationDetailsFragment"
@@ -42,8 +42,8 @@
             android:id="@+id/toLocationList"
             app:destination="@id/locationListFragment" />
         <argument
-            android:name="location"
-            app:argType="com.tonyk.android.rickandmorty.model.location.LocationEntity" />
+            android:name="id"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/locationListFragment"
@@ -75,8 +75,8 @@
             android:id="@+id/to_CharacterDetails"
             app:destination="@id/characterDetailsFragment" />
         <argument
-            android:name="episode"
-            app:argType="com.tonyk.android.rickandmorty.model.episode.EpisodeEntity" />
+            android:name="id"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/charactersFilterFragment"

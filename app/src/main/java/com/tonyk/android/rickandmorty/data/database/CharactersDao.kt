@@ -12,6 +12,9 @@ interface CharactersDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCharacters(characters: List<CharacterEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCharacter(character: CharacterEntity)
+
     @Query(
         "SELECT * FROM characters WHERE " +
                 "(:name IS NULL OR lower(name) LIKE '%' || lower(:name) || '%') AND " +
@@ -32,5 +35,8 @@ interface CharactersDao {
     fun getCharactersByID(
         id: List<String>
     ): PagingSource<Int, CharacterEntity>
+
+    @Query("SELECT * FROM characters WHERE id IN (:id)")
+    fun getCharacterByID(id : Int) : CharacterEntity
 }
 

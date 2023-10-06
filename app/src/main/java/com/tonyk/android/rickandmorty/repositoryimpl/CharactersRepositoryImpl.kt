@@ -9,7 +9,7 @@ import com.tonyk.android.rickandmorty.data.repository.CharactersRepository
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import com.tonyk.android.rickandmorty.util.Constants.PAGE_SIZE
-import com.tonyk.android.rickandmorty.util.pagingsources.CharactersPagingDataSource
+import com.tonyk.android.rickandmorty.pagingsources.CharactersPagingDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class CharactersRepositoryImpl @Inject constructor(
     ): Flow<PagingData<CharacterEntity>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = {
+            pagingSourceFactory =    {
                 if (status) {
                     CharactersPagingDataSource(api, charactersDao, filter)
                 } else {
@@ -53,5 +53,13 @@ class CharactersRepositoryImpl @Inject constructor(
                 charactersDao.getCharactersByID(id = ids)
             }
         ).flow
+    }
+
+    override suspend fun getCharacterByID(id: Int, status: Boolean): CharacterEntity {
+        if (status) {
+            val result = api.fetchCharacterByID(id)
+            charactersDao. insertCharacter(result)
+        }
+        return charactersDao.getCharacterByID(id)
     }
 }

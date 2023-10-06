@@ -1,6 +1,7 @@
 package com.tonyk.android.rickandmorty.data.repository
 
 import androidx.paging.PagingData
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import kotlinx.coroutines.flow.Flow
@@ -16,4 +17,8 @@ interface EpisodesRepository {
         status: Boolean
     ): Flow<PagingData<EpisodeEntity>>
 
+    suspend fun getEpisodeByID(
+        id: Int,
+        status: Boolean
+    ): EpisodeEntity
 }

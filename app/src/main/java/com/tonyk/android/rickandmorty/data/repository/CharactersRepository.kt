@@ -16,4 +16,9 @@ interface CharactersRepository {
         status: Boolean
     ): Flow<PagingData<CharacterEntity>>
 
+    suspend fun getCharacterByID(
+        id: Int,
+        status: Boolean
+    ): CharacterEntity
+
 }

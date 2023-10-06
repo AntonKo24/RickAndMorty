@@ -1,32 +1,34 @@
-package com.tonyk.android.rickandmorty.util.pagingsources
+package com.tonyk.android.rickandmorty.pagingsources
 
 import android.net.Uri
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
-import com.tonyk.android.rickandmorty.data.database.EpisodesDao
-import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
+import com.tonyk.android.rickandmorty.data.database.CharactersDao
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
+import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import com.tonyk.android.rickandmorty.util.Constants.FIRST_PAGE_INDEX
+import javax.inject.Inject
 
 
-class EpisodesPagingSource(
+class CharactersPagingDataSource @Inject constructor(
     private val api: RickAndMortyApi,
-    private val episodesDao: EpisodesDao,
-    private val filter: EpisodeFilter
-) : PagingSource<Int, EpisodeEntity>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeEntity> {
+    private val charactersDao: CharactersDao,
+    private val filter: CharacterFilter
+) : PagingSource<Int, CharacterEntity>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharacterEntity> {
         val page = params.key ?: FIRST_PAGE_INDEX
         return try {
             val apiResponse =
-                api.fetchAllEpisodes(
+                api.fetchCharacters(
                     page = page,
                     name = filter.name,
-                    episode = filter.episode
+                    status = filter.status,
+                    species = filter.species,
+                    type = filter.type,
+                    gender = filter.gender,
                 )
-            Log.d("PAgingTest33333", "$apiResponse")
-            episodesDao.insertEpisodes(apiResponse.results)
+            charactersDao.insertCharacters(apiResponse.results)
             var nextPageNumber: Int? = null
             if (apiResponse.info.next != null) {
                 val uri = Uri.parse(apiResponse.info.next)
@@ -40,13 +42,11 @@ class EpisodesPagingSource(
             )
 
         } catch (e: Exception) {
-            Log.d("PAgingTest33333", "ERROR")
             LoadResult.Error(e)
-
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, EpisodeEntity>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, CharacterEntity>): Int? {
         return null
     }
 }

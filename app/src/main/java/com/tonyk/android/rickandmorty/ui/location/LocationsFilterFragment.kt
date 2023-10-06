@@ -7,18 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.tonyk.android.rickandmorty.databinding.FragmentEpisodesFilterBinding
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationsFilterBinding
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
-import com.tonyk.android.rickandmorty.viewmodel.EpisodesViewModel
-import com.tonyk.android.rickandmorty.viewmodel.LocationsViewModel
+import com.tonyk.android.rickandmorty.viewmodel.location.LocationsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LocationsFilterFragment : Fragment() {
     private var _binding: FragmentLocationsFilterBinding? = null
     private val binding get() = _binding!!
-    private val locationsViewModel: LocationsViewModel by activityViewModels()
+    private val locationsListViewModel: LocationsListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,38 +30,36 @@ class LocationsFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentFilter = locationsListViewModel.getCurrentFilter()
 
-        val currentFilter = locationsViewModel.getCurrentFilter()
+        binding.apply {
+            locationNamePicker.setText(currentFilter.name)
+            locationTypePicker.setText(currentFilter.type)
+            locationDimensionPicker.setText(currentFilter.dimension)
 
+            backBtn.setOnClickListener {
+                findNavController().popBackStack()
+            }
 
-        binding.locationNamePicker.setText(currentFilter.name)
-        binding.locationTypePicker.setText(currentFilter.type)
-        binding.locationDimensionPicker.setText(currentFilter.dimension)
+            clearBtn.setOnClickListener {
+                locationNamePicker.text.clear()
+                locationTypePicker.text.clear()
+                locationDimensionPicker.text.clear()
+            }
 
-        binding.backBtn.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        binding.clearBtn.setOnClickListener {
-            binding.locationNamePicker.text.clear()
-            binding.locationTypePicker.text.clear()
-            binding.locationDimensionPicker.text.clear()
-        }
-
-        binding.applyBtn.setOnClickListener {
-
-            val locationName = binding.locationNamePicker.text.toString().takeIf { it.isNotEmpty() }
-            val locationType = binding.locationTypePicker.text.toString().takeIf { it.isNotEmpty() }
-            val locationDimension = binding.locationDimensionPicker.text.toString().takeIf { it.isNotEmpty() }
-
-            val locationFilter = LocationFilter(
-                name = locationName,
-                type = locationType,
-                dimension = locationDimension
-            )
-
-            locationsViewModel.applyFilter(locationFilter)
-            findNavController().popBackStack()
+            applyBtn.setOnClickListener {
+                val locationName = locationNamePicker.text.toString().takeIf { it.isNotEmpty() }
+                val locationType = locationTypePicker.text.toString().takeIf { it.isNotEmpty() }
+                val locationDimension =
+                    locationDimensionPicker.text.toString().takeIf { it.isNotEmpty() }
+                val locationFilter = LocationFilter(
+                    name = locationName,
+                    type = locationType,
+                    dimension = locationDimension
+                )
+                locationsListViewModel.applyFilter(locationFilter)
+                findNavController().popBackStack()
+            }
         }
     }
 

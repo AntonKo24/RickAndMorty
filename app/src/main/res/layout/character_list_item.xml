@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/item_back"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
@@ -20,6 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Name"
+            android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/characterImage"
             app:layout_constraintTop_toBottomOf="@+id/characterImage" />
@@ -28,7 +30,9 @@
             android:id="@+id/characterSpecies"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Species"
+            android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/characterName"
             app:layout_constraintTop_toBottomOf="@+id/characterName" />
@@ -37,7 +41,9 @@
             android:id="@+id/characterStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Status"
+            android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/characterSpecies"
             app:layout_constraintTop_toBottomOf="@+id/characterSpecies" />
@@ -46,7 +52,9 @@
             android:id="@+id/characterGender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Gender"
+            android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/characterStatus"
             app:layout_constraintTop_toBottomOf="@+id/characterStatus" />
@@ -56,6 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_marginTop="4dp"
+            android:background="@drawable/background"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
