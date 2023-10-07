@@ -18,10 +18,14 @@ class CharacterViewHolder(
         onCharacterClicked: (character: CharacterEntity) -> Unit
     ) {
         binding.apply {
-            characterGender.text = root.context.getString(R.string.character_gender, characterEntity.gender)
-            characterName.text = root.context.getString(R.string.character_name, characterEntity.name)
-            characterSpecies.text = root.context.getString(R.string.character_species, characterEntity.species)
-            characterStatus.text = root.context.getString(R.string.character_status, characterEntity.status)
+            characterGender.text =
+                root.context.getString(R.string.character_gender, characterEntity.gender)
+            characterName.text =
+                root.context.getString(R.string.character_name, characterEntity.name)
+            characterSpecies.text =
+                root.context.getString(R.string.character_species, characterEntity.species)
+            characterStatus.text =
+                root.context.getString(R.string.character_status, characterEntity.status)
             characterImage.load(characterEntity.image) {
                 crossfade(true)
                 placeholder(R.drawable.ic_loading)

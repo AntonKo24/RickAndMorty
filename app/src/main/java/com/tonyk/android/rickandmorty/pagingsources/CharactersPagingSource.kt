@@ -10,7 +10,6 @@ import com.tonyk.android.rickandmorty.model.character.CharacterFilter
 import com.tonyk.android.rickandmorty.util.Constants.FIRST_PAGE_INDEX
 import javax.inject.Inject
 
-
 class CharactersPagingDataSource @Inject constructor(
     private val api: RickAndMortyApi,
     private val charactersDao: CharactersDao,

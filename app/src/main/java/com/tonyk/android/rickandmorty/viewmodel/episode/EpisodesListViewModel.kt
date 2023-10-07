@@ -17,7 +17,6 @@ class EpisodesListViewModel @Inject constructor(
     private val repository: EpisodesRepository
 ) : BaseListViewModel<EpisodeEntity, EpisodeFilter>(EpisodeFilter()) {
 
-
     override fun loadMainListData() {
         viewModelScope.launch {
             try {
@@ -34,4 +33,3 @@ class EpisodesListViewModel @Inject constructor(
         }
     }
 }
-
