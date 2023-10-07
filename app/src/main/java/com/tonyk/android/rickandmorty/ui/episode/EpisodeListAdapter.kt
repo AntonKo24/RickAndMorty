@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.EpisodeListItemBinding
-import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import java.security.interfaces.ECPublicKey
 
 class EpisodeViewHolder(
     private val binding: EpisodeListItemBinding
@@ -19,9 +18,9 @@ class EpisodeViewHolder(
         onEpisodeClicked: (episode: EpisodeEntity) -> Unit
     ) {
         binding.apply {
-            episodeNameTxt.text = episodeEntity.name
-            episodeNumberTxt.text = episodeEntity.episode
-            airDateTxt.text = episodeEntity.air_date
+            episodeNameTxt.text = root.context.getString(R.string.episode_name, episodeEntity.name)
+            episodeNumberTxt.text = root.context.getString(R.string.episode_number_fill, episodeEntity.episode)
+            airDateTxt.text = root.context.getString(R.string.episode_date, episodeEntity.air_date)
 
             root.setOnClickListener { onEpisodeClicked(episodeEntity) }
         }

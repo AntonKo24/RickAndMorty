@@ -14,7 +14,7 @@
         android:layout_marginEnd="16dp"
         android:background="@color/back_2"
         android:ems="10"
-        android:hint="Example : Rick Sanchez"
+        android:hint="@string/char_name_example"
         android:inputType="text"
         android:padding="8dp"
         android:textColor="@color/white"
@@ -32,7 +32,7 @@
         android:layout_marginEnd="16dp"
         android:background="@color/back_2"
         android:ems="10"
-        android:hint="Example : Human"
+        android:hint="@string/char_spec_example"
         android:inputType="text"
         android:padding="8dp"
         android:textColor="@color/white"
@@ -49,7 +49,7 @@
         android:layout_marginEnd="16dp"
         android:background="@color/back_2"
         android:ems="10"
-        android:hint="Example : Human with giant head"
+        android:hint="@string/char_type_example"
         android:inputType="text"
         android:padding="8dp"
         android:textColor="@color/white"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Alive"
+            android:text="@string/Alive"
             android:textColor="@color/white" />
 
         <RadioButton
@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Dead"
+            android:text="@string/Dead"
             android:textColor="@color/white" />
 
         <RadioButton
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Unknown"
+            android:text="@string/Unknown"
             android:textColor="@color/white" />
     </RadioGroup>
 
@@ -111,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Male"
+            android:text="@string/Male"
             android:textColor="@color/white" />
 
         <RadioButton
@@ -119,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Female"
+            android:text="@string/Female"
             android:textColor="@color/white" />
 
         <RadioButton
@@ -127,7 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Genderless"
+            android:text="@string/Genderless"
             android:textColor="@color/white" />
 
         <RadioButton
@@ -135,7 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/white"
-            android:text="Unknown"
+            android:text="@string/Unknown"
             android:textColor="@color/white" />
     </RadioGroup>
 
@@ -144,7 +144,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Status"
+        android:text="@string/Status"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/statusGroup"
         app:layout_constraintTop_toBottomOf="@+id/typePicker" />
@@ -154,7 +154,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Gender"
+        android:text="@string/Gender"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/genderGroup"
         app:layout_constraintTop_toBottomOf="@+id/typePicker" />
@@ -218,7 +218,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="Character Name"
+        android:text="@string/Name"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filterTitle" />
@@ -229,7 +229,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="Species"
+        android:text="@string/Species"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/namePicker" />
@@ -240,7 +240,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="Type"
+        android:text="@string/Type"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/speciesPicker" />

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentEpisodeDetailsBinding
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.ui.base.BaseDetailsFragment
@@ -58,9 +59,9 @@ class EpisodeDetailsFragment : BaseDetailsFragment<CharacterEntity, CharacterVie
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.episode.collect {
                 binding.apply {
-                    airDateEpisode.text = it.air_date
-                    episodeNameText.text = it.name
-                    episodeNumberText.text = it.episode
+                    airDateEpisode.text = getString(R.string.episode_date, it.air_date)
+                    episodeNameText.text = getString(R.string.episode_name, it.name)
+                    episodeNumberText.text = getString(R.string.episode_number_fill, it.episode)
                 }
             }
         }

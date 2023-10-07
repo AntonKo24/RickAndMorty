@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationDetailsBinding
 import com.tonyk.android.rickandmorty.ui.character.CharactersListAdapter
 import com.tonyk.android.rickandmorty.util.NetworkChecker
@@ -64,9 +65,9 @@ class LocationDetailsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             locationDetailsViewmodel.location.collectLatest {
                 binding.apply {
-                    locationName.text = it.name
-                    locationtypeTxt.text = it.type
-                    dimensionTxt.text = it.dimension
+                    locationName.text = getString(R.string.location_name, it.name)
+                    locationtypeTxt.text = getString(R.string.location_type, it.type)
+                    dimensionTxt.text = getString(R.string.location_dimension, it.dimension)
                     val residents = it.residents
                     if (it.id != -1 && residents[0].isEmpty()) {
                         progressBar.isVisible = false

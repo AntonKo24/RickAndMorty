@@ -80,11 +80,11 @@ class CharacterDetailsFragment : BaseDetailsFragment<EpisodeEntity, EpisodeViewH
                     originLocationName.text =
                         getString(R.string.origin_location, character.origin.name)
                     charLocationName.text = getString(R.string.location, character.location.name)
-                    speciesText.text = getString(R.string.Species, character.species)
-                    genderText.text = getString(R.string.Gender, character.gender)
+                    speciesText.text = getString(R.string.Species_fill, character.species)
+                    genderText.text = getString(R.string.Gender_fill, character.gender)
                     if (character.type.isNotEmpty()) typeText.text =
-                        getString(R.string.Type, character.type)
-                    charStatusText.text = getString(R.string.Status, character.status)
+                        getString(R.string.Type_fill, character.type)
+                    charStatusText.text = getString(R.string.Status_fill, character.status)
 
                 }
             }
