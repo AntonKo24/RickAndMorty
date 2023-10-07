@@ -7,9 +7,9 @@ import com.tonyk.android.rickandmorty.data.database.LocationsDao
 import com.tonyk.android.rickandmorty.data.repository.CharactersRepository
 import com.tonyk.android.rickandmorty.data.repository.EpisodesRepository
 import com.tonyk.android.rickandmorty.data.repository.LocationsRepository
-import com.tonyk.android.rickandmorty.repositoryimpl.CharactersRepositoryImpl
-import com.tonyk.android.rickandmorty.repositoryimpl.EpisodesRepositoryImpl
-import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
+import com.tonyk.android.rickandmorty.data.repository.repositoryimpl.CharactersRepositoryImpl
+import com.tonyk.android.rickandmorty.data.repository.repositoryimpl.EpisodesRepositoryImpl
+import com.tonyk.android.rickandmorty.data.repository.repositoryimpl.LocationsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

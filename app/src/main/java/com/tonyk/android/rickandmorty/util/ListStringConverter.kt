@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.util.conventers
+package com.tonyk.android.rickandmorty.util
 
 import androidx.room.TypeConverter
 

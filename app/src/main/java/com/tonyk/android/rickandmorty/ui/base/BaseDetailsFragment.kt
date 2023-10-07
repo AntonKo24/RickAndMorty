@@ -41,8 +41,7 @@ abstract class BaseDetailsFragment<T : Any, VH : RecyclerView.ViewHolder> : Frag
     abstract fun createAdapter(): PagingDataAdapter<T, VH>
     abstract fun setupUI()
     abstract fun setupAdapter(adapter: PagingDataAdapter<T, VH>)
-
-
+    
     private fun observeData(adapter: PagingDataAdapter<T, VH>) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

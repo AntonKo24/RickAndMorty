@@ -2,9 +2,9 @@ package com.tonyk.android.rickandmorty.viewmodel.episode
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.tonyk.android.rickandmorty.data.repository.EpisodesRepository
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
-import com.tonyk.android.rickandmorty.repositoryimpl.EpisodesRepositoryImpl
 import com.tonyk.android.rickandmorty.viewmodel.base.BaseListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodesListViewModel @Inject constructor(
-    private val repository: EpisodesRepositoryImpl
+    private val repository: EpisodesRepository
 ) : BaseListViewModel<EpisodeEntity, EpisodeFilter>(EpisodeFilter()) {
 
 
@@ -22,7 +22,7 @@ class EpisodesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    repository.getEpisodesList(_currentFilter, networkStatus)
+                    repository.getEpisodesListWithFilters(_currentFilter, networkStatus)
                 }
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->

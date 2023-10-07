@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.util.conventers
+package com.tonyk.android.rickandmorty.util
 
 fun List<String>.extractIdsFromUrls(): List<String> {
     val idList = mutableListOf<String>()

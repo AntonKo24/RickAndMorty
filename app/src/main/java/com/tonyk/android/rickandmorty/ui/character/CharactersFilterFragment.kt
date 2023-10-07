@@ -31,16 +31,20 @@ class CharactersFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupUi() {
         val currentFilter = charactersListViewModel.getCurrentFilter()
 
         binding.apply {
-
             clearBtn.setOnClickListener {
-                namePicker.text.clear()
-                speciesPicker.text.clear()
-                typePicker.text.clear()
-                statusGroup.clearCheck()
-                genderGroup.clearCheck()
+                clearFields()
             }
 
             backBtn.setOnClickListener {
@@ -65,40 +69,51 @@ class CharactersFilterFragment : Fragment() {
             }
 
             applyButton.setOnClickListener {
-                val name = namePicker.text.toString().takeIf { it.isNotEmpty() }
-                val species = speciesPicker.text.toString().takeIf { it.isNotEmpty() }
-                val type = typePicker.text.toString().takeIf { it.isNotEmpty() }
-
-                val selectedStatus = when (statusGroup.checkedRadioButtonId) {
-                    R.id.alivePick -> "Alive"
-                    R.id.deadPick -> "Dead"
-                    R.id.UnknowStatusPick -> "unknown"
-                    else -> null
-                }
-                val selectedGender = when (genderGroup.checkedRadioButtonId) {
-                    R.id.malePick -> "Male"
-                    R.id.femalePick -> "Female"
-                    R.id.genderlessPick -> "Genderless"
-                    R.id.unknownGenderPick -> "unknown"
-                    else -> null
-                }
-
-                val characterFilter = CharacterFilter(
-                    name = name,
-                    species = species,
-                    type = type,
-                    status = selectedStatus,
-                    gender = selectedGender
-                )
-
-                charactersListViewModel.applyFilter(characterFilter)
-                findNavController().popBackStack()
+                applyFilter()
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun clearFields() {
+        binding.namePicker.text.clear()
+        binding.speciesPicker.text.clear()
+        binding.typePicker.text.clear()
+        binding.statusGroup.clearCheck()
+        binding.genderGroup.clearCheck()
+    }
+
+    private fun applyFilter() {
+        val characterFilter = createCharacterFilter()
+        charactersListViewModel.applyFilter(characterFilter)
+        findNavController().popBackStack()
+    }
+
+    private fun createCharacterFilter(): CharacterFilter {
+        val name = binding.namePicker.text.toString().takeIf { it.isNotEmpty() }
+        val species = binding.speciesPicker.text.toString().takeIf { it.isNotEmpty() }
+        val type = binding.typePicker.text.toString().takeIf { it.isNotEmpty() }
+
+        val selectedStatus = when (binding.statusGroup.checkedRadioButtonId) {
+            R.id.alivePick -> "Alive"
+            R.id.deadPick -> "Dead"
+            R.id.UnknowStatusPick -> "unknown"
+            else -> null
+        }
+
+        val selectedGender = when (binding.genderGroup.checkedRadioButtonId) {
+            R.id.malePick -> "Male"
+            R.id.femalePick -> "Female"
+            R.id.genderlessPick -> "Genderless"
+            R.id.unknownGenderPick -> "unknown"
+            else -> null
+        }
+
+        return CharacterFilter(
+            name = name,
+            species = species,
+            type = type,
+            status = selectedStatus,
+            gender = selectedGender
+        )
     }
 }

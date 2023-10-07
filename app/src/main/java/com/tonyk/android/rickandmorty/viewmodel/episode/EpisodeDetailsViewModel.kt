@@ -6,7 +6,7 @@ import com.tonyk.android.rickandmorty.data.repository.CharactersRepository
 import com.tonyk.android.rickandmorty.data.repository.EpisodesRepository
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
-import com.tonyk.android.rickandmorty.util.conventers.extractIdsFromUrls
+import com.tonyk.android.rickandmorty.util.extractIdsFromUrls
 import com.tonyk.android.rickandmorty.viewmodel.base.BaseDetailViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 
 @HiltViewModel
 class EpisodeDetailsViewModel @Inject constructor(

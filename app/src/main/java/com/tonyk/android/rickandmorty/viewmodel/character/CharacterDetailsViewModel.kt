@@ -10,7 +10,7 @@ import com.tonyk.android.rickandmorty.model.character.CharacterLocation
 import com.tonyk.android.rickandmorty.model.character.CharacterOrigin
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
-import com.tonyk.android.rickandmorty.util.conventers.extractIdsFromUrls
+import com.tonyk.android.rickandmorty.util.extractIdsFromUrls
 import com.tonyk.android.rickandmorty.viewmodel.base.BaseDetailViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -21,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
 
-            android:text="EpisodeName"
+            android:text="@string/episode_name"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -34,7 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="S01E01"
+            android:text="@string/episode_number_fill"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -48,7 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
 
-            android:text="Date"
+            android:text="@string/episode_date"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/episodeNameTxt"

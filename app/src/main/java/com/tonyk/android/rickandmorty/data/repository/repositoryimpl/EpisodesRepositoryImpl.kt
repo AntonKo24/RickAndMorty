@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.repositoryimpl
+package com.tonyk.android.rickandmorty.data.repository.repositoryimpl
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,7 +17,7 @@ class EpisodesRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val episodesDao: EpisodesDao
 ) : EpisodesRepository {
-    override suspend fun getEpisodesList(
+    override suspend fun getEpisodesListWithFilters(
         filter: EpisodeFilter,
         status: Boolean
     ): Flow<PagingData<EpisodeEntity>> {
@@ -32,7 +32,6 @@ class EpisodesRepositoryImpl @Inject constructor(
                         episode = filter.episode
                     )
                 }
-
             }
         ).flow
     }

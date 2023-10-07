@@ -2,9 +2,9 @@ package com.tonyk.android.rickandmorty.viewmodel.location
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.tonyk.android.rickandmorty.data.repository.LocationsRepository
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
-import com.tonyk.android.rickandmorty.repositoryimpl.LocationsRepositoryImpl
 import com.tonyk.android.rickandmorty.viewmodel.base.BaseListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,19 +14,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationsListViewModel @Inject constructor(
-    private val repository: LocationsRepositoryImpl
+    private val repository: LocationsRepository
 ) : BaseListViewModel<LocationEntity, LocationFilter>(LocationFilter()) {
 
     override fun loadMainListData() {
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO)  { repository.getLocationsList(_currentFilter, networkStatus) }
+                withContext(Dispatchers.IO) {
+                    repository.getLocationsListWithFilters(
+                        _currentFilter,
+                        networkStatus
+                    )
+                }
                     .cachedIn(viewModelScope)
                     .collect { pagingData ->
                         _dataFlow.value = pagingData
                     }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 handleException(e)
             }
         }
