@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,11 +20,11 @@ import com.tonyk.android.rickandmorty.viewmodel.base.BaseListViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragment() {
+abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : BaseFragment<T>() {
     private var _binding: FragmentMainListBinding? = null
     private val binding get() = _binding!!
 
-    protected abstract val viewModel: BaseListViewModel<T, *>
+    abstract override val viewModel: BaseListViewModel<T, *>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,12 +77,11 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         val status = NetworkChecker.isNetworkAvailable(requireContext())
         viewModel.initializeListFragment(status)
         if (status) {
-            binding.statusText.text =  getString(R.string.online)
+            binding.statusText.text = getString(R.string.online)
             binding.icStatus.load(R.drawable.ic_online)
-        }
-        else {
+        } else {
             binding.icStatus.load(R.drawable.ic_offline)
-            binding.statusText.text =  getString(R.string.offline)
+            binding.statusText.text = getString(R.string.offline)
         }
     }
 
@@ -94,12 +91,11 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         binding.apply {
             SwipeRefreshLayout.isRefreshing = false
             if (statusRefreshed) {
-                binding.statusText.text =  getString(R.string.online)
+                binding.statusText.text = getString(R.string.online)
                 binding.icStatus.load(R.drawable.ic_online)
-            }
-            else {
+            } else {
                 binding.icStatus.load(R.drawable.ic_offline)
-                binding.statusText.text =  getString(R.string.offline)
+                binding.statusText.text = getString(R.string.offline)
             }
         }
     }
@@ -118,20 +114,12 @@ abstract class BaseListFragment<T : Any, VH : RecyclerView.ViewHolder> : Fragmen
         viewLifecycleOwner.lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 binding.apply {
-                    progressBar.isVisible = loadStates.refresh is LoadState.Loading || loadStates.append is LoadState.Loading
+                    progressBar.isVisible =
+                        loadStates.refresh is LoadState.Loading || loadStates.append is LoadState.Loading
                     emptyStateText.isVisible = loadStates.refresh is LoadState.Error
                     if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached) {
                         emptyStateText.isVisible = adapter.itemCount < 1
                     }
-                }
-            }
-        }
-    }
-    private fun observeErrorState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.errorState.collect { error ->
-                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
         }

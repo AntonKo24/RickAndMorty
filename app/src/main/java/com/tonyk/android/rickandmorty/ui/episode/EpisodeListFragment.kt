@@ -28,5 +28,4 @@ class EpisodeListFragment : BaseListFragment<EpisodeEntity, EpisodeViewHolder>()
     override fun navigateToFilterFragment() {
         findNavController().navigate(EpisodeListFragmentDirections.toEpisodesFilterFragment())
     }
-
 }
