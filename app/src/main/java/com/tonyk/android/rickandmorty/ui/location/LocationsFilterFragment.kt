@@ -4,19 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.databinding.FragmentLocationsFilterBinding
+import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
+import com.tonyk.android.rickandmorty.ui.base.BaseFragment
 import com.tonyk.android.rickandmorty.viewmodel.location.LocationsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LocationsFilterFragment : Fragment() {
+class LocationsFilterFragment : BaseFragment<LocationEntity>() {
     private var _binding: FragmentLocationsFilterBinding? = null
     private val binding get() = _binding!!
-    private val locationsListViewModel: LocationsListViewModel by activityViewModels()
+
+    override val viewModel: LocationsListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +41,7 @@ class LocationsFilterFragment : Fragment() {
     }
 
     private fun setupUi() {
-        val currentFilter = locationsListViewModel.getCurrentFilter()
+        val currentFilter = viewModel.getCurrentFilter()
 
         binding.apply {
             locationNamePicker.setText(currentFilter.name)
@@ -60,7 +62,7 @@ class LocationsFilterFragment : Fragment() {
 
     private fun applyFilter() {
         val locationFilter = createLocationFilter()
-        locationsListViewModel.applyFilter(locationFilter)
+        viewModel.applyFilter(locationFilter)
         findNavController().popBackStack()
     }
 

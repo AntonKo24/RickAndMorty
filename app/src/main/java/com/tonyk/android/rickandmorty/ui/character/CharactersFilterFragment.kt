@@ -4,20 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.FragmentCharactersFilterBinding
+import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.character.CharacterFilter
+import com.tonyk.android.rickandmorty.ui.base.BaseFragment
 import com.tonyk.android.rickandmorty.viewmodel.character.CharactersListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CharactersFilterFragment : Fragment() {
+class CharactersFilterFragment : BaseFragment<CharacterEntity>() {
     private var _binding: FragmentCharactersFilterBinding? = null
     private val binding get() = _binding!!
-    private val charactersListViewModel: CharactersListViewModel by activityViewModels()
+
+    override val viewModel: CharactersListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +42,7 @@ class CharactersFilterFragment : Fragment() {
     }
 
     private fun setupUi() {
-        val currentFilter = charactersListViewModel.getCurrentFilter()
+        val currentFilter = viewModel.getCurrentFilter()
 
         binding.apply {
             clearBtn.setOnClickListener {
@@ -84,7 +86,7 @@ class CharactersFilterFragment : Fragment() {
 
     private fun applyFilter() {
         val characterFilter = createCharacterFilter()
-        charactersListViewModel.applyFilter(characterFilter)
+        viewModel.applyFilter(characterFilter)
         findNavController().popBackStack()
     }
 
