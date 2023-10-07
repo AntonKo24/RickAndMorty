@@ -24,7 +24,6 @@ class LocationDetailsViewModel @Inject constructor(
 
     val location: StateFlow<LocationEntity> get() = _location
 
-
     override fun loadListDetailsData(ids: List<String>) {
         if (ids.isNotEmpty()) {
             viewModelScope.launch {
@@ -36,10 +35,9 @@ class LocationDetailsViewModel @Inject constructor(
                         .collect { pagingData ->
                             _dataFlow.value = pagingData
                         }
+                } catch (e: Exception) {
+                    handleException(e)
                 }
-               catch (e: Exception) {
-                   handleException(e)
-               }
             }
         }
     }

@@ -55,14 +55,13 @@ class CharacterDetailsFragment : BaseDetailsFragment<EpisodeEntity, EpisodeViewH
                     CharacterDetailsFragmentDirections.toEpisodeDetailsFragment(episode.id)
 
                 )
-
             }
         )
     }
 
     override fun setupUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.character.collect {character ->
+            viewModel.character.collect { character ->
                 binding.apply {
                     charDetailsName.text = character.name
                     characterPhoto.load(character.image) {
@@ -125,7 +124,6 @@ class CharacterDetailsFragment : BaseDetailsFragment<EpisodeEntity, EpisodeViewH
         super.onDestroyView()
         _binding = null
     }
-
 
     private fun setupLocationsData() {
         viewLifecycleOwner.lifecycleScope.launch {

@@ -37,6 +37,6 @@ interface CharactersDao {
     ): PagingSource<Int, CharacterEntity>
 
     @Query("SELECT * FROM characters WHERE id IN (:id)")
-    fun getCharacterByID(id : Int) : CharacterEntity
+    suspend fun getCharacterByID(id : Int) : CharacterEntity
 }
 

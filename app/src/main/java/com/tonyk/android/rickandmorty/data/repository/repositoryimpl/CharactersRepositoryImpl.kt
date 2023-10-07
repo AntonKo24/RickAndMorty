@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.repositoryimpl
+package com.tonyk.android.rickandmorty.data.repository.repositoryimpl
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,7 +17,7 @@ class CharactersRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val charactersDao: CharactersDao
 ) : CharactersRepository {
-    override suspend fun getCharactersList(
+    override suspend fun getCharactersListWithFilters(
         filter: CharacterFilter,
         status: Boolean
     ): Flow<PagingData<CharacterEntity>> {

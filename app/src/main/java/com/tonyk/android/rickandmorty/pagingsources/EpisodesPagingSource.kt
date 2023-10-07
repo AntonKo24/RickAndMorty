@@ -10,14 +10,15 @@ import com.tonyk.android.rickandmorty.model.episode.EpisodeFilter
 import com.tonyk.android.rickandmorty.util.Constants.FIRST_PAGE_INDEX
 import javax.inject.Inject
 
-
 class EpisodesPagingSource @Inject constructor(
     private val api: RickAndMortyApi,
     private val episodesDao: EpisodesDao,
     private val filter: EpisodeFilter
 ) : PagingSource<Int, EpisodeEntity>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeEntity> {
+
         val page = params.key ?: FIRST_PAGE_INDEX
+
         return try {
             val apiResponse =
                 api.fetchAllEpisodes(

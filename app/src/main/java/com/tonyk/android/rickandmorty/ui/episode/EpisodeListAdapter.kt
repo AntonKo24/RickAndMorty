@@ -1,6 +1,5 @@
 package com.tonyk.android.rickandmorty.ui.episode
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -18,19 +17,22 @@ class EpisodeViewHolder(
         onEpisodeClicked: (episode: EpisodeEntity) -> Unit
     ) {
         binding.apply {
-            episodeNameTxt.text = root.context.getString(R.string.episode_name, episodeEntity.name)
-            episodeNumberTxt.text = root.context.getString(R.string.episode_number_fill, episodeEntity.episode)
-            airDateTxt.text = root.context.getString(R.string.episode_date, episodeEntity.air_date)
+            episodeNameTxt.text =
+                root.context.getString(R.string.episode_name, episodeEntity.name)
+            episodeNumberTxt.text =
+                root.context.getString(R.string.episode_number_fill, episodeEntity.episode)
+            airDateTxt.text =
+                root.context.getString(R.string.episode_date, episodeEntity.air_date)
 
             root.setOnClickListener { onEpisodeClicked(episodeEntity) }
         }
-        Log.d("PAgingTest33333", "EPISODES NOW : ${episodeEntity.name}")
     }
 }
 
-class EpisodeListAdapter(private val onEpisodeClicked: (episode: EpisodeEntity) -> Unit) : PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>(
-    EpisodeDiffCallback()
-) {
+class EpisodeListAdapter(private val onEpisodeClicked: (episode: EpisodeEntity) -> Unit) :
+    PagingDataAdapter<EpisodeEntity, EpisodeViewHolder>(
+        EpisodeDiffCallback()
+    ) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -30,6 +30,15 @@ class EpisodesFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupUi() {
         val currentFilter = episodesListViewModel.getCurrentFilter()
 
         binding.apply {
@@ -41,25 +50,32 @@ class EpisodesFilterFragment : Fragment() {
             }
 
             clearBtn.setOnClickListener {
-                episodeNamePicker.text.clear()
-                episodeNumberPicker.text.clear()
+                clearFields()
             }
 
             buttonApply.setOnClickListener {
-                val episodeName = episodeNamePicker.text.toString().takeIf { it.isNotEmpty() }
-                val episodeNumber = episodeNumberPicker.text.toString().takeIf { it.isNotEmpty() }
-                val episodeFilter = EpisodeFilter(
-                    name = episodeName,
-                    episode = episodeNumber
-                )
-                episodesListViewModel.applyFilter(episodeFilter)
-                findNavController().popBackStack()
+                applyFilter()
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun clearFields() {
+        binding.episodeNamePicker.text.clear()
+        binding.episodeNumberPicker.text.clear()
+    }
+
+    private fun applyFilter() {
+        val episodeFilter = createEpisodeFilter()
+        episodesListViewModel.applyFilter(episodeFilter)
+        findNavController().popBackStack()
+    }
+
+    private fun createEpisodeFilter(): EpisodeFilter {
+        val episodeName = binding.episodeNamePicker.text.toString().takeIf { it.isNotEmpty() }
+        val episodeNumber = binding.episodeNumberPicker.text.toString().takeIf { it.isNotEmpty() }
+        return EpisodeFilter(
+            name = episodeName,
+            episode = episodeNumber
+        )
     }
 }

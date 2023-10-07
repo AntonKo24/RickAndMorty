@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">RickAndMorty</string>
-
     <string name="origin_location">Origin location: %1$s</string>
     <string name="location">Current location: %1$s</string>
     <string name="origin_location_loaded">Origin location: %1$s></string>
@@ -54,8 +53,7 @@
     <string name="loc_dimen_example">Example : Cronenberg Dimension</string>
     <string name="ep_name_example">Example : Pilot</string>
     <string name="ep_number_example">Example : S0105</string>
-
-
-
-
+    <string name="Characters">Characters</string>
+    <string name="Locations">Locations</string>
+    <string name="Episodes">Episodes</string>
 </resources>

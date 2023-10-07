@@ -1,4 +1,4 @@
-package com.tonyk.android.rickandmorty.repositoryimpl
+package com.tonyk.android.rickandmorty.data.repository.repositoryimpl
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,7 +17,7 @@ class LocationsRepositoryImpl @Inject constructor(
     private val api: RickAndMortyApi,
     private val locationsDao: LocationsDao
 ) : LocationsRepository {
-    override suspend fun getLocationsList(
+    override suspend fun getLocationsListWithFilters(
         filter: LocationFilter,
         status: Boolean
     ): Flow<PagingData<LocationEntity>> {

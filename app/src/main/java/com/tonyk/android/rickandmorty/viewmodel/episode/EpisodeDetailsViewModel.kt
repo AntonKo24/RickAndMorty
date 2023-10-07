@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class EpisodeDetailsViewModel @Inject constructor(
     private val charactersRepository: CharactersRepository,

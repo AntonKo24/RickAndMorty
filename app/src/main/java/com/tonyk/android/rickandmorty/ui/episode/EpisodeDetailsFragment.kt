@@ -70,7 +70,7 @@ class EpisodeDetailsFragment : BaseDetailsFragment<CharacterEntity, CharacterVie
                 refreshFragmentData(args.id)
                 SwipeRefreshLayout.isRefreshing = false
             }
-            binding.backBtn.setOnClickListener {
+            backBtn.setOnClickListener {
                 findNavController().popBackStack()
             }
         }

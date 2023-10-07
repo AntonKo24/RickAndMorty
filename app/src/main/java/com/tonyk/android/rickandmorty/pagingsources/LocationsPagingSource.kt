@@ -7,7 +7,7 @@ import com.tonyk.android.rickandmorty.data.api.RickAndMortyApi
 import com.tonyk.android.rickandmorty.data.database.LocationsDao
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 import com.tonyk.android.rickandmorty.model.location.LocationFilter
-import com.tonyk.android.rickandmorty.util.Constants
+import com.tonyk.android.rickandmorty.util.Constants.FIRST_PAGE_INDEX
 import javax.inject.Inject
 
 class LocationsPagingSource @Inject constructor(
@@ -16,7 +16,8 @@ class LocationsPagingSource @Inject constructor(
     private val filter: LocationFilter
 ) : PagingSource<Int, LocationEntity>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LocationEntity> {
-        val page = params.key ?: Constants.FIRST_PAGE_INDEX
+
+        val page = params.key ?: FIRST_PAGE_INDEX
 
         return try {
             val apiResponse =
@@ -35,7 +36,7 @@ class LocationsPagingSource @Inject constructor(
             }
             LoadResult.Page(
                 data = apiResponse.results,
-                prevKey = if (page == Constants.FIRST_PAGE_INDEX) null else page - 1,
+                prevKey = if (page == FIRST_PAGE_INDEX) null else page - 1,
                 nextKey = nextPageNumber
             )
 

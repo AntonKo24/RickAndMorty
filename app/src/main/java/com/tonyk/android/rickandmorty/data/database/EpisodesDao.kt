@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 
 @Dao
@@ -30,6 +29,6 @@ interface EpisodesDao {
     fun getEpisodesByID(id: List<String>): PagingSource<Int, EpisodeEntity>
 
     @Query("SELECT * FROM episodes WHERE id IN (:id)")
-    fun getEpisodeByID(id : Int) : EpisodeEntity
+    suspend fun getEpisodeByID(id: Int): EpisodeEntity
 
 }

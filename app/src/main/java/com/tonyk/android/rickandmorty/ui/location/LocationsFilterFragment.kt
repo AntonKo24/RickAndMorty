@@ -30,6 +30,15 @@ class LocationsFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupUi() {
         val currentFilter = locationsListViewModel.getCurrentFilter()
 
         binding.apply {
@@ -37,34 +46,28 @@ class LocationsFilterFragment : Fragment() {
             locationTypePicker.setText(currentFilter.type)
             locationDimensionPicker.setText(currentFilter.dimension)
 
-            backBtn.setOnClickListener {
-                findNavController().popBackStack()
-            }
-
-            clearBtn.setOnClickListener {
-                locationNamePicker.text.clear()
-                locationTypePicker.text.clear()
-                locationDimensionPicker.text.clear()
-            }
-
-            applyBtn.setOnClickListener {
-                val locationName = locationNamePicker.text.toString().takeIf { it.isNotEmpty() }
-                val locationType = locationTypePicker.text.toString().takeIf { it.isNotEmpty() }
-                val locationDimension =
-                    locationDimensionPicker.text.toString().takeIf { it.isNotEmpty() }
-                val locationFilter = LocationFilter(
-                    name = locationName,
-                    type = locationType,
-                    dimension = locationDimension
-                )
-                locationsListViewModel.applyFilter(locationFilter)
-                findNavController().popBackStack()
-            }
+            backBtn.setOnClickListener { findNavController().popBackStack() }
+            clearBtn.setOnClickListener { clearFields() }
+            applyBtn.setOnClickListener { applyFilter() }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun clearFields() {
+        binding.locationNamePicker.text.clear()
+        binding.locationTypePicker.text.clear()
+        binding.locationDimensionPicker.text.clear()
+    }
+
+    private fun applyFilter() {
+        val locationFilter = createLocationFilter()
+        locationsListViewModel.applyFilter(locationFilter)
+        findNavController().popBackStack()
+    }
+
+    private fun createLocationFilter(): LocationFilter {
+        val name = binding.locationNamePicker.text.toString().takeIf { it.isNotEmpty() }
+        val type = binding.locationTypePicker.text.toString().takeIf { it.isNotEmpty() }
+        val dimension = binding.locationDimensionPicker.text.toString().takeIf { it.isNotEmpty() }
+        return LocationFilter(name = name, type = type, dimension = dimension)
     }
 }

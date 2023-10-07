@@ -29,5 +29,4 @@ interface LocationsDao {
 
     @Query("SELECT * FROM locations WHERE id IN (:id) ")
     suspend fun getLocationByID(id: Int): LocationEntity?
-
 }
