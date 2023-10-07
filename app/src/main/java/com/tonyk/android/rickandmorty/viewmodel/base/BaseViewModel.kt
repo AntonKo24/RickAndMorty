@@ -21,7 +21,7 @@ abstract class BaseViewModel<T : Any>(
     protected val _dataFlow = MutableStateFlow<PagingData<T>>(PagingData.empty())
     val dataFlow: StateFlow<PagingData<T>> = _dataFlow.asStateFlow()
 
-    protected val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
+    private val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
     val errorState: SharedFlow<String> = _errorState
 
 
