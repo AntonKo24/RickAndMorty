@@ -52,7 +52,7 @@
     <string name="loc_type_example">Example : Planet</string>
     <string name="loc_dimen_example">Example : Cronenberg Dimension</string>
     <string name="ep_name_example">Example : Pilot</string>
-    <string name="ep_number_example">Example : S0105</string>
+    <string name="ep_number_example">Example : S01E05</string>
     <string name="Characters">Characters</string>
     <string name="Locations">Locations</string>
     <string name="Episodes">Episodes</string>
