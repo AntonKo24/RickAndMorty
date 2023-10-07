@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.tonyk.android.rickandmorty.model.character.CharacterEntity
 import com.tonyk.android.rickandmorty.model.episode.EpisodeEntity
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
-import com.tonyk.android.rickandmorty.util.conventers.ListStringConverter
+import com.tonyk.android.rickandmorty.util.ListStringConverter
 
 @Database(
     entities = [CharacterEntity::class, LocationEntity::class, EpisodeEntity::class],

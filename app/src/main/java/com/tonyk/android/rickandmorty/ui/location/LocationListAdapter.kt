@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tonyk.android.rickandmorty.R
 import com.tonyk.android.rickandmorty.databinding.LocationListItemBinding
 import com.tonyk.android.rickandmorty.model.location.LocationEntity
 
@@ -16,18 +17,22 @@ class LocationViewHolder(
         onLocationClicked: (location: LocationEntity) -> Unit
     ) {
         binding.apply {
-            locationNameTxt.text = locationEntity.name
-            locationTypeTxt.text =  locationEntity.type
-            locationDimensionTxt.text = locationEntity.dimension
+            locationNameTxt.text =
+                root.context.getString(R.string.location_name, locationEntity.name)
+            locationTypeTxt.text =
+                root.context.getString(R.string.location_type, locationEntity.type)
+            locationDimensionTxt.text =
+                root.context.getString(R.string.location_dimension, locationEntity.dimension)
 
             root.setOnClickListener { onLocationClicked(locationEntity) }
         }
     }
 }
 
-class LocationListAdapter(private val onLocationClicked: (location: LocationEntity) -> Unit) : PagingDataAdapter<LocationEntity, LocationViewHolder>(
-    LocationDiffCallback()
-) {
+class LocationListAdapter(private val onLocationClicked: (location: LocationEntity) -> Unit) :
+    PagingDataAdapter<LocationEntity, LocationViewHolder>(
+        LocationDiffCallback()
+    ) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

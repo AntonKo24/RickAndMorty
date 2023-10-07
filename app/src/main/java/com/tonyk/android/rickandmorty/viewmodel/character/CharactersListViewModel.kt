@@ -33,14 +33,3 @@ class CharactersListViewModel @Inject constructor(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-

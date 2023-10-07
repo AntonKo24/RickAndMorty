@@ -62,21 +62,29 @@ class CharacterDetailsFragment : BaseDetailsFragment<EpisodeEntity, EpisodeViewH
 
     override fun setupUI() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.character.collect {
+            viewModel.character.collect {character ->
                 binding.apply {
-                    charDetailsName.text = it.name
-                    characterPhoto.load(it.image) {
+                    charDetailsName.text = character.name
+                    characterPhoto.load(character.image) {
                         crossfade(true)
                         placeholder(R.drawable.ic_loading)
+                        error(R.drawable.error_pic)
+                    }
+                    characterPhoto.setOnClickListener {
+                        characterPhoto.load(character.image) {
+                            crossfade(true)
+                            placeholder(R.drawable.ic_loading)
+                            error(R.drawable.error_pic)
+                        }
                     }
                     originLocationName.text =
-                        getString(R.string.origin_location, it.origin.name)
-                    charLocationName.text = getString(R.string.location, it.location.name)
-                    speciesText.text = getString(R.string.Species, it.species)
-                    genderText.text = getString(R.string.Gender, it.gender)
-                    if (it.type.isNotEmpty()) typeText.text =
-                        getString(R.string.Type, it.type)
-                    charStatusText.text = getString(R.string.Status, it.status)
+                        getString(R.string.origin_location, character.origin.name)
+                    charLocationName.text = getString(R.string.location, character.location.name)
+                    speciesText.text = getString(R.string.Species, character.species)
+                    genderText.text = getString(R.string.Gender, character.gender)
+                    if (character.type.isNotEmpty()) typeText.text =
+                        getString(R.string.Type, character.type)
+                    charStatusText.text = getString(R.string.Status, character.status)
 
                 }
             }
@@ -98,7 +106,6 @@ class CharacterDetailsFragment : BaseDetailsFragment<EpisodeEntity, EpisodeViewH
             charEpisodesList.adapter = adapter
             charEpisodesList.layoutManager = LinearLayoutManager(context)
         }
-
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 binding.apply {

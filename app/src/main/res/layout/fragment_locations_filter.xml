@@ -11,54 +11,54 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:background="@color/back_2"
         android:ems="10"
-        android:hint="Name"
+        android:hint="Example : Abadango"
         android:inputType="text"
         android:padding="8dp"
         android:textColor="@color/white"
         android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clearBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/locationNameFilterTitle" />
 
     <EditText
         android:id="@+id/locationTypePicker"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:background="@color/back_2"
         android:ems="10"
-        android:hint="Type"
+        android:hint="Example : Planet"
         android:inputType="text"
         android:padding="8dp"
         android:textColor="@color/white"
         android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locationNamePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/locationTypeFilterTitle" />
 
     <EditText
         android:id="@+id/locationDimensionPicker"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:background="@color/back_2"
         android:ems="10"
-        android:hint="Dimension"
+        android:hint="Example : Cronenberg Dimension"
         android:inputType="text"
         android:padding="8dp"
         android:textColor="@color/white"
         android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locationTypePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/locationDimensionFilterTitle" />
 
     <Button
         android:id="@+id/applyBtn"
@@ -112,4 +112,37 @@
         app:layout_constraintEnd_toStartOf="@+id/clearBtn"
         app:layout_constraintStart_toEndOf="@+id/backBtn"
         app:layout_constraintTop_toTopOf="@+id/clearBtn" />
+
+    <TextView
+        android:id="@+id/locationNameFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Location Name"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filterTitle" />
+
+    <TextView
+        android:id="@+id/locationTypeFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Location Type"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationNamePicker" />
+
+    <TextView
+        android:id="@+id/locationDimensionFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Location Dimension"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationTypePicker" />
 </androidx.constraintlayout.widget.ConstraintLayout>

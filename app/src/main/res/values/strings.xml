@@ -3,13 +3,20 @@
 
     <string name="origin_location">Origin location: %1$s</string>
     <string name="location">Current location: %1$s</string>
-    <string name="origin_location_loaded">Origin location: %1$s ></string>
-    <string name="location_loaded">Current location: %1$s ></string>
+    <string name="origin_location_loaded">Origin location: %1$s></string>
+    <string name="location_loaded">Current location: %1$s></string>
     <string name="Species">Species: %1$s</string>
     <string name="Status">Status: %1$s</string>
     <string name="Gender">Gender: %1$s</string>
     <string name="Type">Type: %1$s</string>
-
     <string name="online">ONLINE</string>
     <string name="offline">OFFLINE</string>
+    <string name="apply">APPLY</string>
+    <string name="clear">CLEAR</string>
+    <string name="Characters_filter">Characters Filter</string>
+    <string name="Locations_filter">Locations filter</string>
+    <string name="Episode_filter">Episode filter</string>
+    <string name="location_name">Location name: %1$s</string>
+    <string name="location_type">Location type: %1$s</string>
+    <string name="location_dimension">Location dimension: %1$s</string>
 </resources>
